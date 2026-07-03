@@ -1,40 +1,81 @@
 {
   "atletas": [
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    ""
+    "Cleber",
+    "Angela",
+    "João",
+    "Silvia",
+    "Sandro",
+    "rute",
+    "Pedro",
+    "inez",
+    "Noel",
+    "sinira",
+    "samuel",
+    "Estranha",
+    "Leila",
+    "Paola",
+    "Andreia",
+    "Miguelina"
   ],
   "atletasSorteados": [
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    ""
+    "Sandro",
+    "Silvia",
+    "Paola",
+    "Noel",
+    "Leila",
+    "Pedro",
+    "inez",
+    "Angela",
+    "Estranha",
+    "Miguelina",
+    "Cleber",
+    "rute",
+    "samuel",
+    "sinira",
+    "João",
+    "Andreia"
   ],
-  "placares": {},
-  "torneioIniciado": false
+  "placares": {
+    "1": [
+      "2",
+      "6"
+    ],
+    "2": [
+      "6",
+      "2"
+    ],
+    "3": [
+      "3",
+      "6"
+    ],
+    "4": [
+      "3",
+      "6"
+    ],
+    "5": [
+      "6",
+      "3"
+    ],
+    "6": [
+      "6",
+      "5"
+    ],
+    "7": [
+      "6",
+      "2"
+    ],
+    "8": [
+      "5",
+      "6"
+    ],
+    "10": [
+      "6",
+      "2"
+    ],
+    "12": [
+      "6",
+      "3"
+    ]
+  },
+  "torneioIniciado": true
 }
