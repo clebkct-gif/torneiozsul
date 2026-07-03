@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>1º Torneio de Tênis Zona Sul</title>
+    <!-- Link para o Manifesto do PWA -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0b1a30">
     
@@ -410,16 +411,19 @@
 </head>
 <body>
 
+    <!-- Tela de Boas-Vindas Inicial (Totalmente Separada) -->
     <div id="tela-boas-vindas">
         <img src="logo.jpg" alt="Logo Parque Zona Sul" class="logo-torneio">
         <button class="btn-grande-iniciar" onclick="entrarNoApp()">Visualizar Chaves</button>
     </div>
 
+    <!-- Barra de Notificação de Modo de Visualização Estática (Oculta por padrão) -->
     <div id="aviso-historico-topo">
         Você está visualizando um torneio do histórico de forma estática. 
         <span onclick="buscarDadosDoGitHub('torneio-atual.txt')" style="text-decoration: underline; cursor: pointer; margin-left: 10px; color: var(--accent-yellow);">[ Voltar ao Torneio Atual ]</span>
     </div>
 
+    <!-- Interface Principal do Torneio (Oculta por padrão via classe 'escondido') -->
     <div class="controls-bar escondido" id="barra-controles-app">
         <button class="icon-btn" onclick="toggleFullscreen()" title="Tela Cheia">📺</button>
         
@@ -442,21 +446,25 @@
         </div>
 
         <div class="bracket-container" id="bracket-root">
+            <!-- Oitavas de Final -->
             <div class="round-column">
                 <div class="round-title">Oitavas de Final</div>
                 <div class="round-matches-wrapper" id="oitavas-container"></div>
             </div>
 
+            <!-- Quartas de Final -->
             <div class="round-column">
                 <div class="round-title">Quartas de Final</div>
                 <div class="round-matches-wrapper" id="quartas-container"></div>
             </div>
 
+            <!-- Semifinal -->
             <div class="round-column">
                 <div class="round-title">Semifinal</div>
                 <div class="round-matches-wrapper" id="semifinal-container"></div>
             </div>
 
+            <!-- Final -->
             <div class="round-column">
                 <div class="round-title">Final</div>
                 <div class="round-matches-wrapper">
@@ -466,6 +474,7 @@
         </div>
     </div>
 
+    <!-- Painel Administrativo Modal -->
     <div class="admin-modal" id="adminModal">
         <div class="modal-content">
             <div class="modal-header">
@@ -494,6 +503,7 @@
         </div>
     </div>
 
+    <!-- Modal Pública de Histórico -->
     <div class="admin-modal" id="historicoModal">
         <div class="modal-content" style="max-width: 450px;">
             <div class="modal-header">
@@ -506,6 +516,7 @@
         </div>
     </div>
 
+    <!-- O Motor JavaScript do Sistema Integrado -->
     <script>
         const RAIZ_GITHUB = "./"; 
 
@@ -543,8 +554,8 @@
                     return response.json();
                 })
                 .then(dados => {
-                    atletas = dados.atletas || ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
-                    atletasSorteados = dados.atletasSorteados || ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
+                    atletas = dados.atletas || ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""];
+                    atletasSorteados = dados.atletasSorteados || ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""];
                     placares = dados.placares || {};
                     torneioIniciado = dados.torneioIniciado || false;
                     
@@ -572,7 +583,6 @@
         }
 
         function entrarNoApp() {
-            // Isolamento estrito: Destrói visualmente a tela inicial e ativa a área de jogos
             document.getElementById('tela-boas-vindas').classList.add('escondido');
             document.getElementById('barra-controles-app').classList.remove('escondido');
             document.getElementById('main-container-layout').classList.remove('escondido');
@@ -596,7 +606,6 @@
         }
 
         function iniciarTorneioOficial() {
-            // TRAVA DE SEGURANÇA MÁXIMA: Impede cliques ou reembaralhamentos indesejados pós-start
             if (torneioIniciado) {
                 alert("O torneio já foi iniciado oficialmente! Não é possível reembaralhar os atletas.");
                 return;
@@ -791,7 +800,8 @@
                     if(linhas.length === 0) { container.innerHTML = "<p style='color:#94a3b8;'>Nenhum registro encontrado.</p>"; return; }
                     
                     container.innerHTML = linhas.map(linha => {
-                        const partes = inline = linha.split(' - ');
+                        // FIX: Removido o termo 'inline' que causava quebra de escopo
+                        const partes = linha.split(' - ');
                         const arquivoAlvo = `torneio-${partes[0].trim()}.txt`;
                         return `<button onclick="carregarTorneioDoPassado('${arquivoAlvo}')" style="background:#1e3a60; text-align:left; color:white; border:none; padding:10px; border-radius:4px; cursor:pointer; font-size:0.85rem; width:100%; font-weight:600;">📅 ${linha}</button>`;
                     }).join('');
