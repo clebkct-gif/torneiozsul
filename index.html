@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>1º Torneio de Tênis Zona Sul</title>
-    <!-- Link para o Manifesto do PWA -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0b1a30">
     
@@ -26,7 +25,6 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        /* Começa branco para a tela de boas-vindas */
         body {
             background-color: #ffffff;
             color: #333333;
@@ -39,7 +37,12 @@
             transition: background-color 0.3s ease;
         }
 
-        /* Tela Inicial de Boas-Vindas */
+        /* Classe Crítica: Garante isolamento absoluto entre as telas */
+        .escondido {
+            display: none !important;
+        }
+
+        /* Tela Inicial de Boas-Vindas (Isolada) */
         #tela-boas-vindas {
             display: flex;
             flex-direction: column;
@@ -77,12 +80,7 @@
             background-color: #111827;
         }
 
-        /* Ocultos inicialmente */
-        .controls-bar, .main-container {
-            display: none;
-        }
-
-        /* Mudança de Tema pós-login/entrada */
+        /* Mudança de Tema pós-entrada */
         body.torneio-ativo {
             background-color: var(--bg-color);
             color: var(--text-color);
@@ -412,20 +410,17 @@
 </head>
 <body>
 
-    <!-- Tela de Boas-Vindas Inicial -->
     <div id="tela-boas-vindas">
         <img src="logo.jpg" alt="Logo Parque Zona Sul" class="logo-torneio">
         <button class="btn-grande-iniciar" onclick="entrarNoApp()">Visualizar Chaves</button>
     </div>
 
-    <!-- Barra de Notificação de Modo de Visualização Estática -->
     <div id="aviso-historico-topo">
         Você está visualizando um torneio do histórico de forma estática. 
         <span onclick="buscarDadosDoGitHub('torneio-atual.txt')" style="text-decoration: underline; cursor: pointer; margin-left: 10px; color: var(--accent-yellow);">[ Voltar ao Torneio Atual ]</span>
     </div>
 
-    <!-- Interface Principal do Torneio -->
-    <div class="controls-bar">
+    <div class="controls-bar escondido" id="barra-controles-app">
         <button class="icon-btn" onclick="toggleFullscreen()" title="Tela Cheia">📺</button>
         
         <div class="header-torneio-inline">
@@ -440,32 +435,28 @@
         </div>
     </div>
 
-    <div class="main-container" id="main-container-layout">
+    <div class="main-container escondido" id="main-container-layout">
         <div class="sidebar-sorteio" id="sidebar-painel">
             <div class="sidebar-title">Atletas</div>
             <div id="lista-sorteio"></div>
         </div>
 
         <div class="bracket-container" id="bracket-root">
-            <!-- Oitavas de Final -->
             <div class="round-column">
                 <div class="round-title">Oitavas de Final</div>
                 <div class="round-matches-wrapper" id="oitavas-container"></div>
             </div>
 
-            <!-- Quartas de Final -->
             <div class="round-column">
                 <div class="round-title">Quartas de Final</div>
                 <div class="round-matches-wrapper" id="quartas-container"></div>
             </div>
 
-            <!-- Semifinal -->
             <div class="round-column">
                 <div class="round-title">Semifinal</div>
                 <div class="round-matches-wrapper" id="semifinal-container"></div>
             </div>
 
-            <!-- Final -->
             <div class="round-column">
                 <div class="round-title">Final</div>
                 <div class="round-matches-wrapper">
@@ -475,7 +466,6 @@
         </div>
     </div>
 
-    <!-- Painel Administrativo Modal -->
     <div class="admin-modal" id="adminModal">
         <div class="modal-content">
             <div class="modal-header">
@@ -504,7 +494,6 @@
         </div>
     </div>
 
-    <!-- Modal Pública de Histórico -->
     <div class="admin-modal" id="historicoModal">
         <div class="modal-content" style="max-width: 450px;">
             <div class="modal-header">
@@ -517,7 +506,6 @@
         </div>
     </div>
 
-    <!-- O Motor JavaScript do Sistema Integrado -->
     <script>
         const RAIZ_GITHUB = "./"; 
 
@@ -533,8 +521,6 @@
         let isAdmin = false;
         const SENHA_CORRETA = "admin123";
         let placares = {}; 
-        
-        // Proteção Crítica de Memória Local
         let visualizandoHistorico = false;
 
         window.onload = function() {
@@ -544,10 +530,8 @@
         };
 
         function buscarDadosDoGitHub(arquivoNome = 'torneio-atual.txt') {
-            // Sinaliza se a origem é um arquivo imutável do histórico
             visualizandoHistorico = (arquivoNome !== 'torneio-atual.txt');
             
-            // Gerencia a exibição da barra de aviso superior
             const avisoTopo = document.getElementById('aviso-historico-topo');
             if (avisoTopo) {
                 avisoTopo.style.display = visualizandoHistorico ? 'block' : 'none';
@@ -559,8 +543,8 @@
                     return response.json();
                 })
                 .then(dados => {
-                    atletas = dados.atletas || ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""];
-                    atletasSorteados = dados.atletasSorteados || ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""];
+                    atletas = dados.atletas || ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
+                    atletasSorteados = dados.atletasSorteados || ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
                     placares = dados.placares || {};
                     torneioIniciado = dados.torneioIniciado || false;
                     
@@ -588,9 +572,11 @@
         }
 
         function entrarNoApp() {
-            document.getElementById('tela-boas-vindas').style.display = 'none';
-            document.querySelector('.controls-bar').style.display = 'flex';
-            document.querySelector('.main-container').style.display = 'grid';
+            // Isolamento estrito: Destrói visualmente a tela inicial e ativa a área de jogos
+            document.getElementById('tela-boas-vindas').classList.add('escondido');
+            document.getElementById('barra-controles-app').classList.remove('escondido');
+            document.getElementById('main-container-layout').classList.remove('escondido');
+            
             document.body.classList.add('torneio-ativo');
             toggleFullscreen();
         }
@@ -602,7 +588,6 @@
                 document.getElementById('btn-iniciar-torneio').style.display = 'none';
                 document.getElementById('area-edicao-atletas').style.display = 'none';
             } else {
-                // Se estiver no histórico, não exibe painéis pendentes de configuração
                 document.getElementById('sidebar-painel').style.display = visualizandoHistorico ? 'none' : 'block';
                 document.getElementById('main-container-layout').style.gridTemplateColumns = visualizandoHistorico ? '1fr' : '140px 1fr';
                 document.getElementById('btn-iniciar-torneio').style.display = visualizandoHistorico ? 'none' : 'inline-block';
@@ -611,6 +596,11 @@
         }
 
         function iniciarTorneioOficial() {
+            // TRAVA DE SEGURANÇA MÁXIMA: Impede cliques ou reembaralhamentos indesejados pós-start
+            if (torneioIniciado) {
+                alert("O torneio já foi iniciado oficialmente! Não é possível reembaralhar os atletas.");
+                return;
+            }
             if(!isAdmin) {
                 alert("Apenas o administrador pode iniciar oficialmente o torneio!");
                 return;
@@ -722,12 +712,10 @@
         }
 
         function salvarEAtualizar() {
-            // Se estiver em modo estático de histórico, impede a alteração dos registros locais ativos
             if (visualizandoHistorico) {
                 renderizarAplicativo();
                 return;
             }
-
             localStorage.setItem('atletas_torneio', JSON.stringify(atletas));
             localStorage.setItem('atletas_sorteados', JSON.stringify(atletasSorteados));
             localStorage.setItem('placares_torneio', JSON.stringify(placares));
@@ -740,7 +728,6 @@
                 const jogoId = input.getAttribute('data-jogo');
                 const pos = parseInt(input.getAttribute('data-pos'));
                 
-                // Se não for admin ou se for visualização do histórico, os inputs ficam travados
                 if (!isAdmin || !torneioIniciado || visualizandoHistorico) input.disabled = true;
 
                 const arr = placares[jogoId];
@@ -774,11 +761,6 @@
             URL.revokeObjectURL(url);
         }
 
-        function appendIconThicknessPallet() {
-            // Espessura e paleta de cores unificadas no topo para centralização prática
-            console.log("Centralização de ferramentas de customização carregada.");
-        }
-
         function arquivarParaHistorico() {
             const dataIdentificador = prompt("Digite a data identificadora do torneio (Ex: 2026-07-02):");
             if (!dataIdentificador) return;
@@ -809,7 +791,7 @@
                     if(linhas.length === 0) { container.innerHTML = "<p style='color:#94a3b8;'>Nenhum registro encontrado.</p>"; return; }
                     
                     container.innerHTML = linhas.map(linha => {
-                        const partes = linha.split(' - ');
+                        const partes = inline = linha.split(' - ');
                         const arquivoAlvo = `torneio-${partes[0].trim()}.txt`;
                         return `<button onclick="carregarTorneioDoPassado('${arquivoAlvo}')" style="background:#1e3a60; text-align:left; color:white; border:none; padding:10px; border-radius:4px; cursor:pointer; font-size:0.85rem; width:100%; font-weight:600;">📅 ${linha}</button>`;
                     }).join('');
@@ -828,8 +810,8 @@
         
         function resetarParaNovoTorneio() {
             if(confirm("Deseja limpar o aplicativo local para começar do zero?")) {
-                atletas = ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
-                atletasSorteados = ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
+                atletas = ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""];
+                atletasSorteados = ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""];
                 placares = {}; torneioIniciado = false;
                 localStorage.clear();
                 visualizandoHistorico = false;
@@ -877,6 +859,7 @@
 
         function abrirAdminModal() { document.getElementById('adminModal').style.display = 'flex'; }
         function closeAdminModal() { document.getElementById('adminModal').style.display = 'none'; }
+        
         function toggleFullscreen() {
             if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(() => {});
             else document.exitFullscreen();
