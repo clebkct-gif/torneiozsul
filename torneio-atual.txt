@@ -1,39 +1,39 @@
 {
   "atletas": [
-    "Cleber",
-    "Angela",
-    "João",
-    "Silvia",
-    "Sandro",
-    "rute",
-    "Pedro",
-    "inez",
-    "Noel",
-    "sinira",
-    "samuel",
-    "Estranha",
-    "Leila",
-    "Paola",
-    "Andreia",
-    "Miguelina"
+    "Paulo",
+    "Flávio",
+    "He-Man",
+    "David",
+    "SGirl",
+    "Malboro",
+    "BatGirl",
+    "Sigma",
+    "BobEaponja",
+    "Ômega",
+    "Monica",
+    "Vabla",
+    "André",
+    "Tal",
+    "Ney",
+    "Xunda"
   ],
   "atletasSorteados": [
-    "Sandro",
-    "Silvia",
-    "Paola",
-    "Noel",
-    "Leila",
-    "Pedro",
-    "inez",
-    "Angela",
-    "Estranha",
-    "Miguelina",
-    "Cleber",
-    "rute",
-    "samuel",
-    "sinira",
-    "João",
-    "Andreia"
+    "André",
+    "BatGirl",
+    "BobEaponja",
+    "SGirl",
+    "Sigma",
+    "Tal",
+    "Flávio",
+    "Paulo",
+    "Xunda",
+    "Ney",
+    "He-Man",
+    "David",
+    "Malboro",
+    "Vabla",
+    "Ômega",
+    "Monica"
   ],
   "placares": {
     "1": [
@@ -41,40 +41,28 @@
       "6"
     ],
     "2": [
-      "6",
-      "2"
-    ],
-    "3": [
-      "3",
+      "4",
       "6"
     ],
+    "3": [
+      "6",
+      "5"
+    ],
     "4": [
-      "3",
+      "5",
       "6"
     ],
     "5": [
       "6",
-      "3"
+      "4"
     ],
     "6": [
-      "6",
-      "5"
-    ],
-    "7": [
-      "6",
-      "2"
-    ],
-    "8": [
-      "5",
+      "3",
       "6"
     ],
-    "10": [
-      "6",
-      "2"
-    ],
-    "12": [
-      "6",
-      "3"
+    "7": [
+      "3",
+      "6"
     ]
   },
   "torneioIniciado": true
