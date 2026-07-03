@@ -1,0 +1,40 @@
+{
+  "atletas": [
+    "a",
+    "b",
+    "c",
+    "d",
+    "e",
+    "f",
+    "g",
+    "h",
+    "i",
+    "j",
+    "k",
+    "l",
+    "m",
+    "n",
+    "o",
+    "p"
+  ],
+  "atletasSorteados": [
+    "m",
+    "i",
+    "d",
+    "f",
+    "j",
+    "o",
+    "c",
+    "h",
+    "e",
+    "l",
+    "g",
+    "a",
+    "n",
+    "k",
+    "p",
+    "b"
+  ],
+  "placares": {},
+  "torneioIniciado": true
+}
