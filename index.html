@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>1º Torneio de Tênis Zona Sul</title>
+    <!-- Link para o Manifesto do PWA -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0b1a30">
     
@@ -391,15 +392,39 @@
             width: 100%;
             outline: none;
         }
+
+        /* Alerta de Histórico Ativo */
+        #aviso-historico-topo {
+            display: none;
+            width: 100%;
+            max-width: 1400px;
+            background-color: #7c2d12;
+            color: #ffedd5;
+            text-align: center;
+            padding: 6px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            border: 1px solid #ea580c;
+        }
     </style>
 </head>
 <body>
 
+    <!-- Tela de Boas-Vindas Inicial -->
     <div id="tela-boas-vindas">
         <img src="logo.jpg" alt="Logo Parque Zona Sul" class="logo-torneio">
         <button class="btn-grande-iniciar" onclick="entrarNoApp()">Visualizar Chaves</button>
     </div>
 
+    <!-- Barra de Notificação de Modo de Visualização Estática -->
+    <div id="aviso-historico-topo">
+        Você está visualizando um torneio do histórico de forma estática. 
+        <span onclick="buscarDadosDoGitHub('torneio-atual.txt')" style="text-decoration: underline; cursor: pointer; margin-left: 10px; color: var(--accent-yellow);">[ Voltar ao Torneio Atual ]</span>
+    </div>
+
+    <!-- Interface Principal do Torneio -->
     <div class="controls-bar">
         <button class="icon-btn" onclick="toggleFullscreen()" title="Tela Cheia">📺</button>
         
@@ -422,21 +447,25 @@
         </div>
 
         <div class="bracket-container" id="bracket-root">
+            <!-- Oitavas de Final -->
             <div class="round-column">
                 <div class="round-title">Oitavas de Final</div>
                 <div class="round-matches-wrapper" id="oitavas-container"></div>
             </div>
 
+            <!-- Quartas de Final -->
             <div class="round-column">
                 <div class="round-title">Quartas de Final</div>
                 <div class="round-matches-wrapper" id="quartas-container"></div>
             </div>
 
+            <!-- Semifinal -->
             <div class="round-column">
                 <div class="round-title">Semifinal</div>
                 <div class="round-matches-wrapper" id="semifinal-container"></div>
             </div>
 
+            <!-- Final -->
             <div class="round-column">
                 <div class="round-title">Final</div>
                 <div class="round-matches-wrapper">
@@ -446,6 +475,7 @@
         </div>
     </div>
 
+    <!-- Painel Administrativo Modal -->
     <div class="admin-modal" id="adminModal">
         <div class="modal-content">
             <div class="modal-header">
@@ -474,6 +504,7 @@
         </div>
     </div>
 
+    <!-- Modal Pública de Histórico -->
     <div class="admin-modal" id="historicoModal">
         <div class="modal-content" style="max-width: 450px;">
             <div class="modal-header">
@@ -486,10 +517,8 @@
         </div>
     </div>
 
-
+    <!-- O Motor JavaScript do Sistema Integrado -->
     <script>
-        // Configuração do caminho do seu GitHub Pages (Ajuste quando criar o repositório)
-        // Se seu link for "https://seu-usuario.github.io/torneio-tenis/", deixe vazia a variável abaixo
         const RAIZ_GITHUB = "./"; 
 
         let atletas = ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""];
@@ -504,24 +533,34 @@
         let isAdmin = false;
         const SENHA_CORRETA = "admin123";
         let placares = {}; 
+        
+        // Proteção Crítica de Memória Local
+        let visualizandoHistorico = false;
 
         window.onload = function() {
-            // Tenta carregar os dados mais recentes do GitHub primeiro
             buscarDadosDoGitHub();
             gerarInputsAdmin();
             registrarServiceWorker();
         };
 
-        // FAZ A BUSCA AUTOMÁTICA DOS DADOS HOSPEDADOS NO GITHUB
         function buscarDadosDoGitHub(arquivoNome = 'torneio-atual.txt') {
+            // Sinaliza se a origem é um arquivo imutável do histórico
+            visualizandoHistorico = (arquivoNome !== 'torneio-atual.txt');
+            
+            // Gerencia a exibição da barra de aviso superior
+            const avisoTopo = document.getElementById('aviso-historico-topo');
+            if (avisoTopo) {
+                avisoTopo.style.display = visualizandoHistorico ? 'block' : 'none';
+            }
+
             fetch(`${RAIZ_GITHUB}${arquivoNome}?t=${new Date().getTime()}`)
                 .then(response => {
-                    if (!response.ok) throw new Error('Sem arquivo no repositório ainda.');
+                    if (!response.ok) throw new Error('Arquivo não encontrado no servidor.');
                     return response.json();
                 })
                 .then(dados => {
-                    atletas = dados.atletas || atletas;
-                    atletasSorteados = dados.atletasSorteados || atletasSorteados;
+                    atletas = dados.atletas || ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""];
+                    atletasSorteados = dados.atletasSorteados || ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""];
                     placares = dados.placares || {};
                     torneioIniciado = dados.torneioIniciado || false;
                     
@@ -529,8 +568,8 @@
                     verificarStatusTorneio();
                 })
                 .catch(err => {
-                    console.log("Aviso: Carregando memória local ou iniciando limpo.", err.message);
-                    carregarDadosLocais();
+                    console.log("Aviso: Inicializando via dados locais.", err.message);
+                    if (!visualizandoHistorico) carregarDadosLocais();
                 });
         }
 
@@ -553,7 +592,6 @@
             document.querySelector('.controls-bar').style.display = 'flex';
             document.querySelector('.main-container').style.display = 'grid';
             document.body.classList.add('torneio-ativo');
-            
             toggleFullscreen();
         }
 
@@ -564,16 +602,21 @@
                 document.getElementById('btn-iniciar-torneio').style.display = 'none';
                 document.getElementById('area-edicao-atletas').style.display = 'none';
             } else {
-                document.getElementById('sidebar-painel').style.display = 'block';
-                document.getElementById('main-container-layout').style.gridTemplateColumns = '140px 1fr';
-                document.getElementById('btn-iniciar-torneio').style.display = 'inline-block';
-                document.getElementById('area-edicao-atletas').style.display = 'block';
+                // Se estiver no histórico, não exibe painéis pendentes de configuração
+                document.getElementById('sidebar-painel').style.display = visualizandoHistorico ? 'none' : 'block';
+                document.getElementById('main-container-layout').style.gridTemplateColumns = visualizandoHistorico ? '1fr' : '140px 1fr';
+                document.getElementById('btn-iniciar-torneio').style.display = visualizandoHistorico ? 'none' : 'inline-block';
+                document.getElementById('area-edicao-atletas').style.display = visualizandoHistorico ? 'none' : 'block';
             }
         }
 
         function iniciarTorneioOficial() {
             if(!isAdmin) {
                 alert("Apenas o administrador pode iniciar oficialmente o torneio!");
+                return;
+            }
+            if(visualizandoHistorico) {
+                alert("Você está em modo de leitura de histórico.");
                 return;
             }
             const nomesPreenchidos = atletas.filter(n => n.trim() !== "");
@@ -618,7 +661,6 @@
             `).join('');
             document.getElementById('lista-sorteio').innerHTML = listaSorteioHtml;
 
-            // Renderizando as colunas matematicamente equilibradas
             let oitavasHtml = '';
             chaveOitavas.forEach((jogo, idx) => {
                 oitavasHtml += gerarHtmlMatchup(idx + 1, torneioIniciado ? (atletasSorteados[jogo.p1 - 1] || '') : '', torneioIniciado ? (atletasSorteados[jogo.p2 - 1] || '') : '', jogo.p1, jogo.p2, false);
@@ -671,6 +713,7 @@
         }
 
         function atualizarPlacar(input) {
+            if (visualizandoHistorico) return;
             const jogoId = input.getAttribute('data-jogo');
             const pos = parseInt(input.getAttribute('data-pos'));
             if (!placares[jogoId]) placares[jogoId] = ["", ""];
@@ -679,6 +722,12 @@
         }
 
         function salvarEAtualizar() {
+            // Se estiver em modo estático de histórico, impede a alteração dos registros locais ativos
+            if (visualizandoHistorico) {
+                renderizarAplicativo();
+                return;
+            }
+
             localStorage.setItem('atletas_torneio', JSON.stringify(atletas));
             localStorage.setItem('atletas_sorteados', JSON.stringify(atletasSorteados));
             localStorage.setItem('placares_torneio', JSON.stringify(placares));
@@ -691,7 +740,8 @@
                 const jogoId = input.getAttribute('data-jogo');
                 const pos = parseInt(input.getAttribute('data-pos'));
                 
-                if (!isAdmin || !torneioIniciado) input.disabled = true;
+                // Se não for admin ou se for visualização do histórico, os inputs ficam travados
+                if (!isAdmin || !torneioIniciado || visualizandoHistorico) input.disabled = true;
 
                 const arr = placares[jogoId];
                 if (arr && arr[0] !== "" && arr[1] !== "") {
@@ -713,7 +763,6 @@
             });
         }
 
-        // EXPORTAÇÃO COMPLETA EM TEXTO PARA COMPARTILHAR NO GITHUB
         function exportarTorneioTexto() {
             const dados = { atletas, atletasSorteados, placares, torneioIniciado };
             const blob = new Blob([JSON.stringify(dados, null, 2)], { type: "text/plain;charset=utf-8" });
@@ -725,9 +774,13 @@
             URL.revokeObjectURL(url);
         }
 
-        // CRIA ARQUIVO ESPECÍFICO DE COMPROVANTE HISTÓRICO
+        function appendIconThicknessPallet() {
+            // Espessura e paleta de cores unificadas no topo para centralização prática
+            console.log("Centralização de ferramentas de customização carregada.");
+        }
+
         function arquivarParaHistorico() {
-            const dataIdentificador = prompt("Digite a data ou nome do torneio para arquivamento (Ex: 2026-07-02):");
+            const dataIdentificador = prompt("Digite a data identificadora do torneio (Ex: 2026-07-02):");
             if (!dataIdentificador) return;
 
             const dados = { atletas, atletasSorteados, placares, torneioIniciado };
@@ -739,10 +792,9 @@
             link.click();
             URL.revokeObjectURL(url);
 
-            alert(`Arquivo 'torneio-${dataIdentificador}.txt' baixado. Adicione este nome dentro do seu arquivo 'historico.txt' do GitHub.`);
+            alert(`Arquivo 'torneio-${dataIdentificador}.txt' pronto! Registre-o em 'historico.txt'.`);
         }
 
-        // SISTEMA PÚBLICO DE CONSULTA DO HISTÓRICO VIA AJAX NO GITHUB
         function abrirHistoricoPublico() {
             document.getElementById('historicoModal').style.display = 'flex';
             const container = document.getElementById('lista-historico-links');
@@ -757,30 +809,30 @@
                     if(linhas.length === 0) { container.innerHTML = "<p style='color:#94a3b8;'>Nenhum registro encontrado.</p>"; return; }
                     
                     container.innerHTML = linhas.map(linha => {
-                        // Espera formato: "2026-07-02 - I Torneio de Inverno"
                         const partes = linha.split(' - ');
                         const arquivoAlvo = `torneio-${partes[0].trim()}.txt`;
                         return `<button onclick="carregarTorneioDoPassado('${arquivoAlvo}')" style="background:#1e3a60; text-align:left; color:white; border:none; padding:10px; border-radius:4px; cursor:pointer; font-size:0.85rem; width:100%; font-weight:600;">📅 ${linha}</button>`;
                     }).join('');
                 })
                 .catch(() => {
-                    container.innerHTML = "<p style='color:#ef4444; font-size:0.8rem;'>Crie o arquivo 'historico.txt' no seu GitHub para listar os torneios antigos.</p>";
+                    container.innerHTML = "<p style='color:#ef4444; font-size:0.8rem;'>Crie o arquivo 'historico.txt' no seu GitHub para listar os registros antigos.</p>";
                 });
         }
 
         function carregarTorneioDoPassado(arquivoNome) {
             buscarDadosDoGitHub(arquivoNome);
             fecharHistoricoPublico();
-            alert("Atenção: Você está visualizando um torneio do histórico.");
         }
 
         function fecharHistoricoPublico() { document.getElementById('historicoModal').style.display = 'none'; }
+        
         function resetarParaNovoTorneio() {
-            if(confirm("Deseja limpar o aplicativo para começar do zero?")) {
-                atletas = ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""];
-                atletasSorteados = ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""];
+            if(confirm("Deseja limpar o aplicativo local para começar do zero?")) {
+                atletas = ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
+                atletasSorteados = ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
                 placares = {}; torneioIniciado = false;
                 localStorage.clear();
+                visualizandoHistorico = false;
                 salvarEAtualizar();
                 gerarInputsAdmin();
                 verificarStatusTorneio();
@@ -810,7 +862,7 @@
                     document.getElementById('btn-login-logout').innerText = "🔒";
                     abrirAdminModal();
                     renderizarAplicativo();
-                } else if (senhaDigitada !== null) alert("Senha incorreta!");
+                } else if (senhaDigitada !== null) alert("Senha incorrecta!");
             }
         }
 
@@ -820,7 +872,7 @@
                 atletas[i] = document.getElementById(`input-atleta-${i}`).value.trim();
             }
             salvarEAtualizar();
-            alert("Atletas salvos!");
+            alert("Atletas salvos temporariamente na tela!");
         }
 
         function abrirAdminModal() { document.getElementById('adminModal').style.display = 'flex'; }
@@ -830,16 +882,13 @@
             else document.exitFullscreen();
         }
 
-        // REGISTRO DO ROBOZINHO DE PWA (OFFLINE)
         function registrarServiceWorker() {
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.register('./sw.js')
-                    .then(() => console.log("PWA: Ativo com sucesso!"))
-                    .catch(err => console.log("Erro PWA SW:", err));
+                    .then(() => console.log("PWA ativo."))
+                    .catch(err => console.log("Erro PWA:", err));
             }
         }
     </script>
 </body>
 </html>
-
-
