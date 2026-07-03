@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>1º Torneio de Tênis Zona Sul</title>
+    <title>Torneio de Tênis Zona Sul</title>
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0b1a30">
     
@@ -48,21 +48,23 @@
             justify-content: center;
             text-align: center;
             min-height: 90vh;
-            gap: 25px;
+            gap: 20px;
             max-width: 450px;
             width: 100%;
+            padding: 10px;
         }
 
         .logo-torneio {
-            width: 100%;
-            max-width: 320px;
+            width: 95%;
+            max-width: 400px;
             height: auto;
             object-fit: contain;
+            margin-bottom: -10px;
         }
 
         .btn-grande-iniciar {
             font-size: 1.3rem;
-            padding: 14px 35px;
+            padding: 14px 45px;
             border-radius: 30px;
             background-color: #1e3a8a;
             color: white;
@@ -71,6 +73,8 @@
             cursor: pointer;
             box-shadow: 0 4px 10px rgba(30, 58, 138, 0.3);
             transition: transform 0.2s, background-color 0.2s;
+            width: 85%;
+            max-width: 300px;
         }
 
         .btn-grande-iniciar:hover {
@@ -414,7 +418,7 @@
 
     <div id="tela-boas-vindas">
         <img src="logo.jpg" alt="Logo Parque Zona Sul" class="logo-torneio">
-        <button class="btn-grande-iniciar" onclick="entrarNoApp()">Visualizar Chaves</button>
+        <button class="btn-grande-iniciar" onclick="entrarNoApp()">Torneios</button>
     </div>
 
     <div id="aviso-historico-topo">
@@ -531,6 +535,17 @@
             registrarServiceWorker();
         };
 
+        // Função auxiliar para capitalizar nomes próprios automaticamente
+        function formatarNomeAtleta(nome) {
+            if (!nome) return "";
+            return nome.trim().toLowerCase().split(/\s+/).map(palavra => {
+                if (palavra.length === 0) return "";
+                // Mantém conectores curtos em minúscula (de, da, do, dos, das)
+                if (["de", "da", "do", "dos", "das"].includes(palavra)) return palavra;
+                return palavra.charAt(0).toUpperCase() + palavra.slice(1);
+            }).join(" ");
+        }
+
         function buscarDadosDoGitHub(arquivoNome = 'torneio-atual.txt') {
             visualizandoHistorico = (arquivoNome !== 'torneio-atual.txt');
             
@@ -545,8 +560,8 @@
                     return response.json();
                 })
                 .then(dados => {
-                    atletas = dados.atletas || ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""];
-                    atletasSorteados = dados.atletasSorteados || ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""];
+                    atletas = (dados.atletas || ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""]).map(formatarNomeAtleta);
+                    atletasSorteados = (dados.atletasSorteados || ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""]).map(formatarNomeAtleta);
                     placares = dados.placares || {};
                     torneioIniciado = dados.torneioIniciado || false;
                     
@@ -562,9 +577,9 @@
 
         function carregarDadosLocais() {
             const dadosSalvos = localStorage.getItem('atletas_torneio');
-            if (dadosSalvos) atletas = JSON.parse(dadosSalvos);
+            if (dadosSalvos) atletas = JSON.parse(dadosSalvos).map(formatarNomeAtleta);
             const sorteadosSalvos = localStorage.getItem('atletas_sorteados');
-            if (sorteadosSalvos) atletasSorteados = JSON.parse(sorteadosSalvos);
+            if (sorteadosSalvos) atletasSorteados = JSON.parse(sorteadosSalvos).map(formatarNomeAtleta);
             const placaresSalvos = localStorage.getItem('placares_torneio');
             if (placaresSalvos) placares = JSON.parse(placaresSalvos);
             const statusSalvo = localStorage.getItem('status_torneio');
@@ -600,6 +615,8 @@
         function iniciarTorneioOficial() {
             if (torneioIniciado) return;
             if(!isAdmin) return;
+            
+            atletas = atletas.map(formatarNomeAtleta);
             const nomesPreenchidos = atletas.filter(n => n.trim() !== "");
             if (nomesPreenchidos.length < 16) return;
 
@@ -847,7 +864,7 @@
                     if(linhas.length === 0) { container.innerHTML = "<p style='color:#94a3b8;'>Nenhum registro encontrado.</p>"; return; }
                     
                     container.innerHTML = linhas.map(linha => {
-                        const partes = linha.split(' - ');
+                        const partes = inlineSplitHistorico(linha);
                         const arquivoAlvo = `torneio-${partes[0].trim()}.txt`;
                         return `<button onclick="carregarTorneioDoPassado('${arquivoAlvo}')" style="background:#1e3a60; text-align:left; color:white; border:none; padding:10px; border-radius:4px; cursor:pointer; font-size:0.85rem; width:100%; font-weight:600;">📅 ${linha}</button>`;
                     }).join('');
@@ -855,6 +872,10 @@
                 .catch(() => {
                     container.innerHTML = "<p style='color:#ef4444; font-size:0.8rem;'>Crie o arquivo 'historico.txt' no seu GitHub para listar os registros antigos.</p>";
                 });
+        }
+
+        function inlineSplitHistorico(linha) {
+            return linha.split(' - ');
         }
 
         function carregarTorneioDoPassado(arquivoNome) {
@@ -908,12 +929,13 @@
         function salvarAtletas() {
             if (!isAdmin || torneioIniciado) return;
             for (let i = 0; i < 16; i++) {
-                atletas[i] = document.getElementById(`input-atleta-${i}`).value.trim();
+                atletas[i] = formatarNomeAtleta(document.getElementById(`input-atleta-${i}`).value);
             }
             salvarEAtualizar();
             renderizarEstruturaInicial();
             atualizarFluxoNomesEPlacares();
-            alert("Atletas salvos temporariamente!");
+            gerarInputsAdmin(); // Atualiza os inputs do modal com os nomes já formatados
+            alert("Atletas salvos e formatados com sucesso!");
         }
 
         function abrirAdminModal() { document.getElementById('adminModal').style.display = 'flex'; }
