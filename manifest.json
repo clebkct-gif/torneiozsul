@@ -1,0 +1,16 @@
+{
+  "name": "Torneio de Tênis Parque Zona Sul",
+  "short_name": "Torneio Tênis",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0b1a30",
+  "theme_color": "#0b1a30",
+  "orientation": "landscape",
+  "icons": [
+    {
+      "src": "logo.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg"
+    }
+  ]
+}

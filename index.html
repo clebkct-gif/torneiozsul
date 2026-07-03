@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1º Torneio de Tênis Zona Sul</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0b1a30">
+    
+    <style>
+        :root {
+            --bg-color: #0b1a30;
+            --card-bg: #162a45;
+            --accent-green: #4caf50;
+            --accent-yellow: #ccff00;
+            --text-color: #ffffff;
+            --input-bg: #1f3a60;
+            --loss-red: #ef4444;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* Começa branco para a tela de boas-vindas */
+        body {
+            background-color: #ffffff;
+            color: #333333;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+            padding: 8px;
+            transition: background-color 0.3s ease;
+        }
+
+        /* Tela Inicial de Boas-Vindas */
+        #tela-boas-vindas {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            min-height: 90vh;
+            gap: 25px;
+            max-width: 450px;
+            width: 100%;
+        }
+
+        .logo-torneio {
+            width: 100%;
+            max-width: 320px;
+            height: auto;
+            object-fit: contain;
+        }
+
+        .btn-grande-iniciar {
+            font-size: 1.3rem;
+            padding: 14px 35px;
+            border-radius: 30px;
+            background-color: #1e3a8a;
+            color: white;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(30, 58, 138, 0.3);
+            transition: transform 0.2s, background-color 0.2s;
+        }
+
+        .btn-grande-iniciar:hover {
+            transform: scale(1.05);
+            background-color: #111827;
+        }
+
+        /* Ocultos inicialmente */
+        .controls-bar, .main-container {
+            display: none;
+        }
+
+        /* Mudança de Tema pós-login/entrada */
+        body.torneio-ativo {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+
+        /* Top Bar Ultra Compacta */
+        .controls-bar {
+            width: 100%;
+            max-width: 1400px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            background: var(--card-bg);
+            padding: 4px 12px;
+            border-radius: 6px;
+            border: 1px solid rgba(255,255,255,0.1);
+            gap: 10px;
+        }
+
+        .header-torneio-inline {
+            color: var(--text-color);
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .header-torneio-inline span {
+            color: var(--accent-yellow);
+        }
+
+        .right-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .icon-btn {
+            background: transparent;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 2px 6px;
+            border-radius: 4px;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .icon-btn:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .btn-start-torneio {
+            background-color: #ea580c;
+            color: white;
+            border: none;
+            padding: 4px 12px;
+            font-size: 0.8rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: filter 0.2s;
+            white-space: nowrap;
+        }
+
+        .btn-start-torneio:hover {
+            filter: brightness(1.2);
+        }
+
+        /* Main Layout */
+        .main-container {
+            width: 100%;
+            max-width: 1400px;
+            display: grid;
+            grid-template-columns: 140px 1fr;
+            gap: 15px;
+        }
+
+        /* Lateral: Atletas */
+        .sidebar-sorteio {
+            background: var(--card-bg);
+            border-radius: 6px;
+            border: 2px solid #0284c7;
+            overflow: hidden;
+            height: max-content;
+        }
+
+        .sidebar-title {
+            background: #0284c7;
+            padding: 6px 4px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            color: white;
+        }
+
+        .atleta-lista-item {
+            padding: 5px 8px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            font-size: 0.8rem;
+            display: flex;
+            gap: 6px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: var(--text-color);
+        }
+
+        .atleta-lista-item span {
+            color: var(--accent-yellow);
+            font-weight: bold;
+            width: 18px;
+            flex-shrink: 0;
+        }
+
+        /* Chaves / Bracket */
+        .bracket-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        .round-column {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .round-title {
+            background: #1e3a8a;
+            text-align: center;
+            padding: 6px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            color: white;
+        }
+
+        .round-matches-wrapper {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            flex-grow: 1;
+            min-height: 620px;
+        }
+
+        .round-matches-wrapper > .matchup {
+            margin: 6px 0;
+        }
+
+        /* Confrontos */
+        .matchup {
+            background: white;
+            color: #333;
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            width: 100%;
+        }
+
+        .matchup-inner {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .atleta-box {
+            display: flex;
+            padding: 6px 10px;
+            font-size: 0.85rem;
+            background: #ffffff;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .atleta-box:first-child {
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .atleta-info-lado {
+            display: flex;
+            align-items: center;
+            flex-grow: 1;
+            overflow: hidden;
+        }
+
+        .atleta-num {
+            background: #0f172a;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 3px;
+            margin-right: 8px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            min-width: 22px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .atleta-nome {
+            font-weight: 600;
+            color: #1e293b;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .placar-input {
+            width: 35px;
+            height: 24px;
+            text-align: center;
+            font-weight: bold;
+            border: 1px solid #cbd5e1;
+            border-radius: 3px;
+            background: #f1f5f9;
+            color: #0f172a;
+            outline: none;
+            flex-shrink: 0;
+        }
+
+        .placar-input:disabled {
+            color: white !important;
+            opacity: 1;
+            border: none;
+        }
+
+        .matchup.advanced .round-title-inside {
+            background: var(--accent-green);
+            color: white;
+            text-align: center;
+            font-size: 0.7rem;
+            padding: 3px;
+            font-weight: bold;
+        }
+
+        .matchup.advanced .atleta-box {
+            background: #f8fafc;
+            font-style: italic;
+            color: #64748b;
+        }
+
+        /* Painel Administrativo Modal */
+        .admin-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.85);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 10px;
+            width: 100%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 1px solid var(--accent-green);
+            color: var(--text-color);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .inputs-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            display: flex;
+            align-items: center;
+            background: var(--input-bg);
+            padding: 5px;
+            border-radius: 4px;
+        }
+
+        .input-group label {
+            width: 25px;
+            text-align: center;
+            color: var(--accent-yellow);
+            font-weight: bold;
+        }
+
+        .input-group input {
+            background: transparent;
+            border: none;
+            color: white;
+            padding: 5px;
+            width: 100%;
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="tela-boas-vindas">
+        <img src="logo.jpg" alt="Logo Parque Zona Sul" class="logo-torneio">
+        <button class="btn-grande-iniciar" onclick="entrarNoApp()">Visualizar Chaves</button>
+    </div>
+
+    <div class="controls-bar">
+        <button class="icon-btn" onclick="toggleFullscreen()" title="Tela Cheia">📺</button>
+        
+        <div class="header-torneio-inline">
+            <span>●</span> Torneio de Tênis Parque Zona Sul <span>●</span>
+        </div>
+        
+        <div class="right-actions">
+            <button class="btn-start-torneio" style="background-color: #0284c7;" onclick="abrirHistoricoPublico()">📜 Histórico</button>
+            <button class="btn-start-torneio" id="btn-iniciar-torneio" onclick="iniciarTorneioOficial()">🔥 Iniciar Torneio</button>
+            <span id="adm-status" style="font-size: 0.8rem; color: #a8a29e;">Visualizador</span>
+            <button class="icon-btn" id="btn-login-logout" onclick="handleAdminAuth()" title="Login ADM">🔑</button>
+        </div>
+    </div>
+
+    <div class="main-container" id="main-container-layout">
+        <div class="sidebar-sorteio" id="sidebar-painel">
+            <div class="sidebar-title">Atletas</div>
+            <div id="lista-sorteio"></div>
+        </div>
+
+        <div class="bracket-container" id="bracket-root">
+            <div class="round-column">
+                <div class="round-title">Oitavas de Final</div>
+                <div class="round-matches-wrapper" id="oitavas-container"></div>
+            </div>
+
+            <div class="round-column">
+                <div class="round-title">Quartas de Final</div>
+                <div class="round-matches-wrapper" id="quartas-container"></div>
+            </div>
+
+            <div class="round-column">
+                <div class="round-title">Semifinal</div>
+                <div class="round-matches-wrapper" id="semifinal-container"></div>
+            </div>
+
+            <div class="round-column">
+                <div class="round-title">Final</div>
+                <div class="round-matches-wrapper">
+                    <div id="final-container"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="admin-modal" id="adminModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Painel do Administrador</h2>
+                <button onclick="closeAdminModal()" style="background: #ef4444; border:none; padding:4px 8px; color:white; border-radius:4px; cursor:pointer;">Fechar</button>
+            </div>
+            
+            <div id="area-edicao-atletas">
+                <p style="font-size: 0.9rem; margin-bottom: 10px; color: #94a3b8;">Insira os 16 nomes abaixo antes de iniciar o torneio:</p>
+                <div class="inputs-grid" id="inputs-atletas-container"></div>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-bottom: 15px;">
+                <button onclick="salvarAtletas()" style="background: var(--accent-green); padding: 8px 16px; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">Salvar Atletas</button>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px;">
+                <h3 style="color: var(--accent-yellow); font-size: 1rem;">Gerador de Arquivos (GitHub)</h3>
+                <p style="font-size: 0.8rem; color: #94a3b8;">Baixe o arquivo atualizado e suba no seu repositório do GitHub para que os participantes vejam as alterações.</p>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 5px;">
+                    <button onclick="exportarTorneioTexto()" style="background: #0284c7; padding: 8px 12px; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.8rem;">📥 Baixar Arquivo Atualizado</button>
+                    <button onclick="arquivarParaHistorico()" style="background: #a855f7; padding: 8px 12px; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.8rem;">🗄️ Arquivar no Histórico</button>
+                    <button onclick="resetarParaNovoTorneio()" style="background: var(--loss-red); padding: 8px 12px; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.8rem;">🔄 Resetar p/ Novo Torneio</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="admin-modal" id="historicoModal">
+        <div class="modal-content" style="max-width: 450px;">
+            <div class="modal-header">
+                <h2>Histórico de Torneios</h2>
+                <button onclick="fecharHistoricoPublico()" style="background: #64748b; border:none; padding:4px 8px; color:white; border-radius:4px; cursor:pointer;">Fechar</button>
+            </div>
+            <div id="lista-historico-links" style="display: flex; flex-direction: column; gap: 10px; max-height: 50vh; overflow-y: auto; padding-right: 5px;">
+                <p style="font-size: 0.9rem; color: #94a3b8;">Carregando registros do servidor...</p>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        // Configuração do caminho do seu GitHub Pages (Ajuste quando criar o repositório)
+        // Se seu link for "https://seu-usuario.github.io/torneio-tenis/", deixe vazia a variável abaixo
+        const RAIZ_GITHUB = "./"; 
+
+        let atletas = ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""];
+        let atletasSorteados = ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""];
+        const chaveOitavas = [
+            { p1: 1,  p2: 16 }, { p1: 8,  p2: 9  }, 
+            { p1: 4,  p2: 13 }, { p1: 5,  p2: 12 }, 
+            { p1: 2,  p2: 15 }, { p1: 7,  p2: 10 }, 
+            { p1: 3,  p2: 14 }, { p1: 6,  p2: 11 }  
+        ];
+        let torneioIniciado = false;
+        let isAdmin = false;
+        const SENHA_CORRETA = "admin123";
+        let placares = {}; 
+
+        window.onload = function() {
+            // Tenta carregar os dados mais recentes do GitHub primeiro
+            buscarDadosDoGitHub();
+            gerarInputsAdmin();
+            registrarServiceWorker();
+        };
+
+        // FAZ A BUSCA AUTOMÁTICA DOS DADOS HOSPEDADOS NO GITHUB
+        function buscarDadosDoGitHub(arquivoNome = 'torneio-atual.txt') {
+            fetch(`${RAIZ_GITHUB}${arquivoNome}?t=${new Date().getTime()}`)
+                .then(response => {
+                    if (!response.ok) throw new Error('Sem arquivo no repositório ainda.');
+                    return response.json();
+                })
+                .then(dados => {
+                    atletas = dados.atletas || atletas;
+                    atletasSorteados = dados.atletasSorteados || atletasSorteados;
+                    placares = dados.placares || {};
+                    torneioIniciado = dados.torneioIniciado || false;
+                    
+                    renderizarAplicativo();
+                    verificarStatusTorneio();
+                })
+                .catch(err => {
+                    console.log("Aviso: Carregando memória local ou iniciando limpo.", err.message);
+                    carregarDadosLocais();
+                });
+        }
+
+        function carregarDadosLocais() {
+            const dadosSalvos = localStorage.getItem('atletas_torneio');
+            if (dadosSalvos) atletas = JSON.parse(dadosSalvos);
+            const sorteadosSalvos = localStorage.getItem('atletas_sorteados');
+            if (sorteadosSalvos) atletasSorteados = JSON.parse(sorteadosSalvos);
+            const placaresSalvos = localStorage.getItem('placares_torneio');
+            if (placaresSalvos) placares = JSON.parse(placaresSalvos);
+            const statusSalvo = localStorage.getItem('status_torneio');
+            if (statusSalvo) torneioIniciado = JSON.parse(statusSalvo);
+
+            renderizarAplicativo();
+            verificarStatusTorneio();
+        }
+
+        function entrarNoApp() {
+            document.getElementById('tela-boas-vindas').style.display = 'none';
+            document.querySelector('.controls-bar').style.display = 'flex';
+            document.querySelector('.main-container').style.display = 'grid';
+            document.body.classList.add('torneio-ativo');
+            
+            toggleFullscreen();
+        }
+
+        function verificarStatusTorneio() {
+            if (torneioIniciado) {
+                document.getElementById('sidebar-painel').style.display = 'none';
+                document.getElementById('main-container-layout').style.gridTemplateColumns = '1fr';
+                document.getElementById('btn-iniciar-torneio').style.display = 'none';
+                document.getElementById('area-edicao-atletas').style.display = 'none';
+            } else {
+                document.getElementById('sidebar-painel').style.display = 'block';
+                document.getElementById('main-container-layout').style.gridTemplateColumns = '140px 1fr';
+                document.getElementById('btn-iniciar-torneio').style.display = 'inline-block';
+                document.getElementById('area-edicao-atletas').style.display = 'block';
+            }
+        }
+
+        function iniciarTorneioOficial() {
+            if(!isAdmin) {
+                alert("Apenas o administrador pode iniciar oficialmente o torneio!");
+                return;
+            }
+            const nomesPreenchidos = atletas.filter(n => n.trim() !== "");
+            if (nomesPreenchidos.length < 16) {
+                alert("Preencha todos os 16 atletas no painel ADM antes de iniciar!");
+                return;
+            }
+
+            if(confirm("Deseja iniciar o sorteio oficial? Os nomes serão embaralhados.")) {
+                atletasSorteados = [...atletas];
+                for (let i = atletasSorteados.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [atletasSorteados[i], atletasSorteados[j]] = [atletasSorteados[j], atletasSorteados[i]];
+                }
+                torneioIniciado = true;
+                salvarEAtualizar();
+            }
+        }
+
+        function obterVencedorDoJogo(jogoId) {
+            const arr = placares[jogoId];
+            if (!arr || arr[0] === "" || arr[1] === "") return null;
+            const p1 = parseInt(arr[0]);
+            const p2 = parseInt(arr[1]);
+            if (!torneioIniciado || p1 === p2) return null;
+
+            if (jogoId <= 8) {
+                const config = chaveOitavas[jogoId - 1];
+                return p1 > p2 ? atletasSorteados[config.p1 - 1] : atletasSorteados[config.p2 - 1];
+            } else if (jogoId === 9) return p1 > p2 ? obterVencedorDoJogo(1) : obterVencedorDoJogo(2);
+            else if (jogoId === 10) return p1 > p2 ? obterVencedorDoJogo(3) : obterVencedorDoJogo(4);
+            else if (jogoId === 11) return p1 > p2 ? obterVencedorDoJogo(5) : obterVencedorDoJogo(6);
+            else if (jogoId === 12) return p1 > p2 ? obterVencedorDoJogo(7) : obterVencedorDoJogo(8);
+            else if (jogoId === 13) return p1 > p2 ? obterVencedorDoJogo(9) : obterVencedorDoJogo(10);
+            else if (jogoId === 14) return p1 > p2 ? obterVencedorDoJogo(11) : obterVencedorDoJogo(12);
+            return null;
+        }
+
+        function renderizarAplicativo() {
+            const listaSorteioHtml = atletas.map((nome, index) => `
+                <div class="atleta-lista-item"><span>${index + 1}.</span> ${nome || ''}</div>
+            `).join('');
+            document.getElementById('lista-sorteio').innerHTML = listaSorteioHtml;
+
+            // Renderizando as colunas matematicamente equilibradas
+            let oitavasHtml = '';
+            chaveOitavas.forEach((jogo, idx) => {
+                oitavasHtml += gerarHtmlMatchup(idx + 1, torneioIniciado ? (atletasSorteados[jogo.p1 - 1] || '') : '', torneioIniciado ? (atletasSorteados[jogo.p2 - 1] || '') : '', jogo.p1, jogo.p2, false);
+            });
+            document.getElementById('oitavas-container').innerHTML = oitavasHtml;
+
+            let quartasHtml = '';
+            [[1, 2], [3, 4], [5, 6], [7, 8]].forEach((pares, idx) => {
+                quartasHtml += gerarHtmlMatchup(9 + idx, obterVencedorDoJogo(pares[0]) || '', obterVencedorDoJogo(pares[1]) || '', null, null, true);
+            });
+            document.getElementById('quartas-container').innerHTML = quartasHtml;
+
+            let semiHtml = '';
+            [[9, 10], [11, 12]].forEach((pares, idx) => {
+                semiHtml += gerarHtmlMatchup(13 + idx, obterVencedorDoJogo(pares[0]) || '', obterVencedorDoJogo(pares[1]) || '', null, null, true);
+            });
+            document.getElementById('semifinal-container').innerHTML = semiHtml;
+
+            const nomeFinal1 = obterVencedorDoJogo(13) || "";
+            const nomeFinal2 = obterVencedorDoJogo(14) || "";
+            document.getElementById('final-container').innerHTML = gerarHtmlMatchup(15, nomeFinal1, nomeFinal2, null, null, true, 'border: 2px solid var(--accent-yellow);');
+
+            aplicarCoresEBloqueios();
+        }
+
+        function gerarHtmlMatchup(jogoId, n1, n2, num1, num2, isAdvanced, estiloExtra = '') {
+            const val1 = placares[jogoId] ? placares[jogoId][0] : "";
+            const val2 = placares[jogoId] ? placares[jogoId][1] : "";
+            return `
+                <div class="matchup ${isAdvanced ? 'advanced' : ''}" style="${estiloExtra}">
+                    ${isAdvanced ? `<div class="round-title-inside" ${jogoId === 15 ? 'style="background: var(--accent-yellow); color: black;"' : ''}>JOGO ${jogoId}</div>` : ''}
+                    <div class="matchup-inner">
+                        <div class="atleta-box" id="box-${jogoId}-1">
+                            <div class="atleta-info-lado">
+                                ${num1 ? `<span class="atleta-num">${num1}</span>` : ''}
+                                <span class="atleta-nome" title="${n1}">${n1}</span>
+                            </div>
+                            <input type="number" class="placar-input" data-jogo="${jogoId}" data-pos="0" value="${val1}" oninput="atualizarPlacar(this)">
+                        </div>
+                        <div class="atleta-box" id="box-${jogoId}-2">
+                            <div class="atleta-info-lado">
+                                ${num2 ? `<span class="atleta-num">${num2}</span>` : ''}
+                                <span class="atleta-nome" title="${n2}">${n2}</span>
+                            </div>
+                            <input type="number" class="placar-input" data-jogo="${jogoId}" data-pos="1" value="${val2}" oninput="atualizarPlacar(this)">
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function atualizarPlacar(input) {
+            const jogoId = input.getAttribute('data-jogo');
+            const pos = parseInt(input.getAttribute('data-pos'));
+            if (!placares[jogoId]) placares[jogoId] = ["", ""];
+            placares[jogoId][pos] = input.value;
+            salvarEAtualizar();
+        }
+
+        function salvarEAtualizar() {
+            localStorage.setItem('atletas_torneio', JSON.stringify(atletas));
+            localStorage.setItem('atletas_sorteados', JSON.stringify(atletasSorteados));
+            localStorage.setItem('placares_torneio', JSON.stringify(placares));
+            localStorage.setItem('status_torneio', JSON.stringify(torneioIniciado));
+            renderizarAplicativo();
+        }
+
+        function aplicarCoresEBloqueios() {
+            document.querySelectorAll('.placar-input').forEach(input => {
+                const jogoId = input.getAttribute('data-jogo');
+                const pos = parseInt(input.getAttribute('data-pos'));
+                
+                if (!isAdmin || !torneioIniciado) input.disabled = true;
+
+                const arr = placares[jogoId];
+                if (arr && arr[0] !== "" && arr[1] !== "") {
+                    const p1 = parseInt(arr[0]);
+                    const p2 = parseInt(arr[1]);
+                    const box = document.getElementById(`box-${jogoId}-${pos + 1}`);
+                    if (p1 !== p2) {
+                        if ((pos === 0 && p1 > p2) || (pos === 1 && p2 > p1)) {
+                            box.style.backgroundColor = "var(--accent-green)";
+                            input.style.backgroundColor = "var(--accent-green)";
+                        } else {
+                            box.style.backgroundColor = "var(--loss-red)";
+                            input.style.backgroundColor = "var(--loss-red)";
+                        }
+                        box.style.color = "white"; input.style.color = "white";
+                        box.querySelector('.atleta-nome').style.color = "white";
+                    }
+                }
+            });
+        }
+
+        // EXPORTAÇÃO COMPLETA EM TEXTO PARA COMPARTILHAR NO GITHUB
+        function exportarTorneioTexto() {
+            const dados = { atletas, atletasSorteados, placares, torneioIniciado };
+            const blob = new Blob([JSON.stringify(dados, null, 2)], { type: "text/plain;charset=utf-8" });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = `torneio-atual.txt`;
+            link.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // CRIA ARQUIVO ESPECÍFICO DE COMPROVANTE HISTÓRICO
+        function arquivarParaHistorico() {
+            const dataIdentificador = prompt("Digite a data ou nome do torneio para arquivamento (Ex: 2026-07-02):");
+            if (!dataIdentificador) return;
+
+            const dados = { atletas, atletasSorteados, placares, torneioIniciado };
+            const blob = new Blob([JSON.stringify(dados, null, 2)], { type: "text/plain;charset=utf-8" });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = `torneio-${dataIdentificador}.txt`;
+            link.click();
+            URL.revokeObjectURL(url);
+
+            alert(`Arquivo 'torneio-${dataIdentificador}.txt' baixado. Adicione este nome dentro do seu arquivo 'historico.txt' do GitHub.`);
+        }
+
+        // SISTEMA PÚBLICO DE CONSULTA DO HISTÓRICO VIA AJAX NO GITHUB
+        function abrirHistoricoPublico() {
+            document.getElementById('historicoModal').style.display = 'flex';
+            const container = document.getElementById('lista-historico-links');
+            
+            fetch(`${RAIZ_GITHUB}historico.txt?t=${new Date().getTime()}`)
+                .then(res => {
+                    if(!res.ok) throw new Error();
+                    return res.text();
+                })
+                .then(texto => {
+                    const linhas = texto.split('\n').filter(l => l.trim() !== "");
+                    if(linhas.length === 0) { container.innerHTML = "<p style='color:#94a3b8;'>Nenhum registro encontrado.</p>"; return; }
+                    
+                    container.innerHTML = linhas.map(linha => {
+                        // Espera formato: "2026-07-02 - I Torneio de Inverno"
+                        const partes = linha.split(' - ');
+                        const arquivoAlvo = `torneio-${partes[0].trim()}.txt`;
+                        return `<button onclick="carregarTorneioDoPassado('${arquivoAlvo}')" style="background:#1e3a60; text-align:left; color:white; border:none; padding:10px; border-radius:4px; cursor:pointer; font-size:0.85rem; width:100%; font-weight:600;">📅 ${linha}</button>`;
+                    }).join('');
+                })
+                .catch(() => {
+                    container.innerHTML = "<p style='color:#ef4444; font-size:0.8rem;'>Crie o arquivo 'historico.txt' no seu GitHub para listar os torneios antigos.</p>";
+                });
+        }
+
+        function carregarTorneioDoPassado(arquivoNome) {
+            buscarDadosDoGitHub(arquivoNome);
+            fecharHistoricoPublico();
+            alert("Atenção: Você está visualizando um torneio do histórico.");
+        }
+
+        function fecharHistoricoPublico() { document.getElementById('historicoModal').style.display = 'none'; }
+        function resetarParaNovoTorneio() {
+            if(confirm("Deseja limpar o aplicativo para começar do zero?")) {
+                atletas = ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""];
+                atletasSorteados = ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""];
+                placares = {}; torneioIniciado = false;
+                localStorage.clear();
+                salvarEAtualizar();
+                gerarInputsAdmin();
+                verificarStatusTorneio();
+                closeAdminModal();
+            }
+        }
+
+        function gerarInputsAdmin() {
+            document.getElementById('inputs-atletas-container').innerHTML = atletas.map((nome, index) => `
+                <div class="input-group"><label>${index + 1}</label><input type="text" id="input-atleta-${index}" value="${nome}"></div>
+            `).join('');
+        }
+
+        function handleAdminAuth() {
+            if (isAdmin) {
+                isAdmin = false;
+                document.getElementById('adm-status').innerText = "Visualizador";
+                document.getElementById('adm-status').style.color = "#a8a29e";
+                document.getElementById('btn-login-logout').innerText = "🔑";
+                renderizarAplicativo();
+            } else {
+                const senhaDigitada = prompt("Senha do Admin:");
+                if (senhaDigitada === SENHA_CORRETA) {
+                    isAdmin = true;
+                    document.getElementById('adm-status').innerText = "ADM 🛠️";
+                    document.getElementById('adm-status').style.color = "var(--accent-yellow)";
+                    document.getElementById('btn-login-logout').innerText = "🔒";
+                    abrirAdminModal();
+                    renderizarAplicativo();
+                } else if (senhaDigitada !== null) alert("Senha incorreta!");
+            }
+        }
+
+        function salvarAtletas() {
+            if (!isAdmin || torneioIniciado) return;
+            for (let i = 0; i < 16; i++) {
+                atletas[i] = document.getElementById(`input-atleta-${i}`).value.trim();
+            }
+            salvarEAtualizar();
+            alert("Atletas salvos!");
+        }
+
+        function abrirAdminModal() { document.getElementById('adminModal').style.display = 'flex'; }
+        function closeAdminModal() { document.getElementById('adminModal').style.display = 'none'; }
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(() => {});
+            else document.exitFullscreen();
+        }
+
+        // REGISTRO DO ROBOZINHO DE PWA (OFFLINE)
+        function registrarServiceWorker() {
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(() => console.log("PWA: Ativo com sucesso!"))
+                    .catch(err => console.log("Erro PWA SW:", err));
+            }
+        }
+    </script>
+</body>
+</html>
+
+
