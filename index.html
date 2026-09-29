@@ -1,0 +1,1364 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Ranking Zona Sul - Tênis</title>
+
+    <!-- Meta tags para PWA e Mobile -->
+    <meta name="theme-color" content="#12181b">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Ranking ZS">
+    <link rel="apple-touch-icon" href="logo.png">
+    <link rel="icon" type="image/png" href="logo.png">
+
+    <!-- Configuração Dinâmica do Web App Manifest (PWA) -->
+    <script>
+        const manifestData = {
+            "name": "Ranking Zona Sul - Tênis",
+            "short_name": "Ranking ZS",
+            "start_url": "./index.html",
+            "display": "standalone",
+            "background_color": "#12181b",
+            "theme_color": "#12181b",
+            "icons": [
+                { "src": "logo.png", "sizes": "192x192", "type": "image/png" },
+                { "src": "logo.png", "sizes": "512x512", "type": "image/png" }
+            ]
+        };
+        const stringManifest = JSON.stringify(manifestData);
+        const blobManifest = new Blob([stringManifest], {type: 'application/json'});
+        const manifestURL = URL.createObjectURL(blobManifest);
+        const linkManifest = document.createElement('link');
+        linkManifest.rel = 'manifest';
+        linkManifest.href = manifestURL;
+        document.head.appendChild(linkManifest);
+    </script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Biblioteca html2canvas -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <style>
+        :root {
+            --bg-color: #12181b;
+            --card-bg: #1e272c;
+            --accent-green-bright: #00e676; 
+            --accent-green-hover: #00c853;  
+            --accent-green-btn: #11381e;
+            --text-color: #ffffff;
+            --text-muted: #b0bec5;          
+            --danger: #ff5252;
+            --warning: #ffb300;
+            --success: #69f0ae;
+            --btn-bg: #2a363d;
+            --landing-bg: #f4f4f4;
+            --yellow-badge: #ffeb3b;        
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Rajdhani', 'Segoe UI', system-ui, sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background-color: var(--landing-bg);
+            color: #333333;
+            overflow-x: hidden;
+        }
+
+        /* LANDING SCREEN */
+        .landing-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh;
+            text-align: center;
+            padding: 20px 20px 40px 20px;
+            background-color: var(--landing-bg);
+            position: relative;
+        }
+
+        .logo-wrapper {
+            margin-top: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+        }
+
+        .logo-img {
+            max-width: 320px;
+            width: 85%;
+            height: auto;
+            mix-blend-mode: multiply;
+            transition: transform 0.3s ease;
+        }
+
+        .logo-img:hover { transform: scale(1.02); }
+
+        .btn-neon-start {
+            font-family: 'Rajdhani', 'Orbitron', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 900;
+            line-height: 1;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #ffffff;
+            background: linear-gradient(135deg, #1e5631, #11381e);
+            padding: 18px 30px;
+            margin-top: 35px;
+            border: 2px solid #0d2c18;
+            border-radius: 50px;
+            cursor: pointer;
+            outline: none;
+            width: 90%;
+            max-width: 340px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: darkNeonPulse 2s infinite ease-in-out alternate;
+            transition: transform 0.2s, background 0.3s;
+        }
+
+        @keyframes darkNeonPulse {
+            0% { box-shadow: 0 0 5px #11381e, 0 0 15px rgba(17, 56, 30, 0.6); text-shadow: 0 0 4px #ffffff; transform: scale(1); }
+            50% { box-shadow: 0 0 2px #0d2c18, 0 0 8px rgba(13, 44, 24, 0.4); text-shadow: 0 0 2px #ffffff; transform: scale(0.98); }
+            100% { box-shadow: 0 0 12px #00e676, 0 0 25px rgba(0, 230, 118, 0.5); text-shadow: 0 0 6px #ffffff; transform: scale(1.02); }
+        }
+
+        .btn-neon-start:active { transform: scale(0.95) !important; }
+
+        .landing-subtitle {
+            margin-top: 20px;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.05rem;
+            color: #222222;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        /* DASHBOARD */
+        .dashboard-container {
+            display: none;
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            flex-direction: column;
+            gap: 6px;
+            padding: 6px;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+        }
+
+        body.app-active {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+
+        .match-panel {
+            background-color: var(--card-bg);
+            padding: 8px;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+            border-top: 3px solid var(--accent-green-bright);
+        }
+
+        .match-builder {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 4px;
+        }
+
+        .player-slot {
+            background-color: #2a363d;
+            padding: 8px 4px;
+            border-radius: 6px;
+            flex: 1;
+            font-size: 0.95rem;
+            font-weight: bold;
+            border: 1px dashed var(--accent-green-bright);
+            color: #ffffff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-align: center;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .player-slot.selected {
+            border-style: solid;
+            background-color: #11381e;
+            color: var(--accent-green-bright);
+        }
+
+        .score-input {
+            width: 42px;
+            padding: 6px 2px;
+            text-align: center;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 4px;
+            border: 1px solid #445560;
+            background-color: #12181b;
+            color: #fff;
+            outline: none;
+        }
+
+        .vs-divider { font-size: 0.9rem; font-weight: bold; color: var(--text-muted); }
+
+        .action-buttons {
+            display: flex;
+            gap: 4px;
+            margin-top: 6px;
+        }
+
+        .btn-action {
+            flex: 1;
+            padding: 8px 2px;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 800;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: var(--btn-bg);
+            color: var(--text-color);
+            user-select: none;
+            touch-action: manipulation;
+            transition: background-color 0.2s;
+        }
+
+        .btn-action.primary { background-color: #11381e; color: #ffffff; }
+        
+        /* ESTILO DO BOTÃO QUANDO AGUARDANDO A SEGUNDA CONFIRMAÇÃO */
+        .btn-action.pending-confirm {
+            background-color: var(--danger) !important;
+            color: #ffffff !important;
+            animation: pulseWarning 1s infinite alternate;
+        }
+
+        @keyframes pulseWarning {
+            0% { opacity: 1; }
+            100% { opacity: 0.8; }
+        }
+
+        .btn-action.active { background-color: #11381e; color: var(--accent-green-bright); border-bottom: 2px solid var(--accent-green-bright); }
+        .btn-action:active { opacity: 0.8; }
+
+        .ranking-panel {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 4px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+            flex: 1;
+        }
+
+        .table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        th, td { padding: 6px 3px; border-bottom: 1px solid #2a363d; white-space: nowrap; }
+        th.col-pos, td.col-pos { padding-right: 2px; width: 1%; }
+        th.col-jogador, td.col-jogador { padding-left: 2px; }
+
+        .btn-print-trigger { width: 15px; padding: 0 4px; cursor: pointer; opacity: 0; user-select: none; }
+
+        th {
+            background-color: #182024;
+            color: var(--accent-green-bright);
+            font-weight: 800;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        tr.player-row td { font-size: 0.98rem; }
+        tr.player-row td.player-name { font-size: 1.05rem; font-weight: 700; color: #ffffff; }
+        tr.player-row { cursor: pointer; }
+        tr.player-row.selected-for-match { background-color: #11381e; border-left: 3px solid var(--accent-green-bright); }
+        
+        tr.player-row.abandoned-row { opacity: 0.55; background-color: rgba(255, 82, 82, 0.05); }
+        tr.player-row.abandoned-row td.player-name { text-decoration: line-through; color: var(--text-muted); }
+
+        .trend-up { color: var(--success); font-weight: bold; }
+        .trend-down { color: var(--danger); font-weight: bold; }
+        .trend-neutral { color: var(--text-muted); }
+
+        .badge-pos {
+            background-color: #12181b;
+            padding: 2px 4px;
+            border-radius: 4px;
+            font-weight: 900;
+            font-size: 0.9rem;
+            color: var(--yellow-badge);
+            border: 1px solid rgba(255, 235, 59, 0.3);
+        }
+
+        .sub-panel {
+            display: none;
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 8px;
+            margin-top: 4px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+        }
+
+        .sub-panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            padding-bottom: 4px;
+            border-bottom: 1px solid #2a363d;
+        }
+
+        .sub-panel-title { font-size: 1rem; font-weight: 800; color: var(--accent-green-bright); display: flex; align-items: center; gap: 5px; }
+        .btn-close-panel { background: transparent; border: none; color: var(--text-muted); font-size: 1.1rem; cursor: pointer; }
+
+        .game-history-item {
+            padding: 8px 4px;
+            border-bottom: 1px solid #2a363d;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .hist-id { background-color: #12181b; color: var(--accent-green-bright); font-weight: 800; padding: 1px 5px; border-radius: 4px; font-size: 0.85rem; border: 1px solid rgba(0, 230, 118, 0.3); }
+        .hist-data { color: var(--text-muted); font-weight: bold; }
+        .hist-vencedor, .hist-perdedor { font-weight: bold; color: #ffffff; }
+        .hist-pts-ganhos { color: var(--accent-green-bright); font-weight: 800; }
+        .hist-pts-perdidos { color: var(--danger); font-weight: 800; }
+        .hist-placar { font-weight: bold; color: #ffffff; }
+
+        /* MODAIS E PAINÉIS FLUTUANTES */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+        }
+
+        .modal-box {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 16px;
+            width: 100%;
+            max-width: 420px;
+            max-height: 90vh;
+            overflow-y: auto;
+            border-top: 4px solid var(--accent-green-bright);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .modal-title { color: #ffffff; font-size: 1.15rem; font-weight: bold; margin: 0; }
+        .modal-input {
+            width: 100%;
+            padding: 10px;
+            background-color: #12181b;
+            border: 1px solid #445560;
+            border-radius: 6px;
+            color: #ffffff;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.05rem;
+            outline: none;
+        }
+
+        .modal-buttons { display: flex; justify-content: flex-end; gap: 8px; margin-top: 5px; }
+
+        .btn-modal {
+            padding: 8px 14px;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .btn-modal.cancel { background-color: var(--btn-bg); color: var(--text-color); }
+        .btn-modal.confirm { background-color: #11381e; color: #ffffff; }
+        .btn-modal.danger { background-color: var(--danger); color: #ffffff; }
+
+        /* LISTA DE EDIÇÃO DE JOGADORES */
+        .player-manage-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #12181b;
+            padding: 8px;
+            border-radius: 6px;
+            gap: 6px;
+        }
+
+        .player-manage-item input {
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1rem;
+            font-weight: bold;
+            flex: 1;
+        }
+
+        .player-manage-actions { display: flex; gap: 4px; }
+        .btn-sm { padding: 4px 8px; font-size: 0.8rem; border-radius: 4px; border: none; cursor: pointer; font-weight: bold; }
+        .btn-status-active { background-color: #11381e; color: var(--accent-green-bright); }
+        .btn-status-abandoned { background-color: #3d2a2a; color: var(--danger); }
+    </style>
+</head>
+<body>
+
+    <!-- 1. TELA INICIAL -->
+    <div class="landing-container" id="landingScreen">
+        <div class="logo-wrapper">
+            <img src="logo.png" alt="Ranking Zona Sul Tênis" class="logo-img">
+        </div>
+        <button class="btn-neon-start" onclick="iniciarAplicativo()">Ranking 2026</button>
+        <div class="landing-subtitle">Clique para Acessar o Dashboard</div>
+    </div>
+
+    <!-- 2. APLICATIVO PRINCIPAL -->
+    <div class="dashboard-container" id="dashboardScreen">
+        
+        <!-- Registro de Partida -->
+        <div class="match-panel">
+            <div class="match-builder">
+                <div class="player-slot" id="slotPlayer1" onclick="limparSlot(0)">Jogador 1</div>
+                
+                <!-- INPUTS RESTROITO A 1 DÍGITO ENTRE 0 E 6 -->
+                <input type="text" id="score1" class="score-input" placeholder="G" maxlength="1" inputmode="numeric" oninput="validarDigitoUnico(this)">
+                <span class="vs-divider">X</span>
+                <input type="text" id="score2" class="score-input" placeholder="G" maxlength="1" inputmode="numeric" oninput="validarDigitoUnico(this)">
+                
+                <div class="player-slot" id="slotPlayer2" onclick="limparSlot(1)">Jogador 2</div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn-action primary" id="btnConfirmar" onclick="salvarJogo()">Confirmar</button>
+                <button class="btn-action" id="btnAdd">Add</button>
+                <button class="btn-action" id="btnHist">Hist</button>
+                <button class="btn-action" id="btnSemana" onclick="toggleSubPainel('semana')">Semana</button>
+            </div>
+        </div>
+
+        <!-- Painel Secundário (Histórico) -->
+        <div class="sub-panel" id="subPanel">
+            <div class="sub-panel-header">
+                <span class="sub-panel-title">
+                    <span id="subPanelTitle">Histórico de Jogos</span>
+                    <span class="btn-print-trigger" id="btnSubPanelShare" title="Compartilhar Painel">📷</span>
+                </span>
+                <button class="btn-close-panel" onclick="fecharSubPainel()">&times;</button>
+            </div>
+            <div id="historyListContainer"></div>
+        </div>
+
+        <!-- Tabela do Ranking -->
+        <div class="ranking-panel" id="rankingPanelToCapture">
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="col-pos">POS</th>
+                            <th class="col-jogador">JOGADOR</th>
+                            <th class="btn-print-trigger" id="btnPrintShare" title="Gerar e Compartilhar Ranking">📷</th>
+                            <th>J</th>
+                            <th>V</th>
+                            <th>Gg</th>
+                            <th>Gp</th>
+                            <th>PTS</th>
+                            <th>EVOL</th>
+                        </tr>
+                    </thead>
+                    <tbody id="rankingTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. MODAL ADICIONAR NOVO JOGADOR (TOQUE RÁPIDO NO ADD) -->
+    <div class="modal-overlay" id="addPlayerModal">
+        <div class="modal-box">
+            <h3 class="modal-title">Adicionar Novo Jogador</h3>
+            <input type="text" id="quickPlayerName" class="modal-input" placeholder="Nome do Jogador..." autocomplete="off">
+            <div class="modal-buttons">
+                <button class="btn-modal cancel" onclick="fecharModalAdicionarJogador()">Cancelar</button>
+                <button class="btn-modal confirm" onclick="confirmarNovoJogadorRapido()">Adicionar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. MODAL GERENCIAR JOGADORES (LONG PRESS NO ADD) -->
+    <div class="modal-overlay" id="managePlayersModal">
+        <div class="modal-box">
+            <h3 class="modal-title">Gerenciar & Editar Jogadores</h3>
+            <p style="font-size:0.85rem; color:var(--text-muted); margin:0;">Altere o nome, altere o status (Ativo/Abandonou) ou exclua um jogador.</p>
+
+            <div id="playersManageList" style="display:flex; flex-direction:column; gap:8px; max-height:280px; overflow-y:auto; margin-top:5px;"></div>
+
+            <div class="modal-buttons">
+                <button class="btn-modal confirm" onclick="fecharModalGerenciarJogadores()">Concluído</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. MODAL GESTÃO DE DADOS (LONG PRESS NO BOTÃO HIST) -->
+    <div class="modal-overlay" id="dataBackupModal">
+        <div class="modal-box">
+            <h3 class="modal-title">Gestão de Dados & Backup</h3>
+            <p style="font-size:0.9rem; color:var(--text-muted); margin:0;">Exporte seus dados para um arquivo TXT de segurança, restaure um backup existente ou resete o app.</p>
+            
+            <button class="btn-modal confirm" style="width:100%; text-align:center;" onclick="exportarBackupTXT()">📥 Exportar Backup (TXT)</button>
+            
+            <label class="btn-modal cancel" style="width:100%; text-align:center; display:block; cursor:pointer;">
+                📤 Restaurar Backup (TXT)
+                <input type="file" id="fileRestoreInput" accept=".txt" style="display:none;" onchange="restaurarBackupTXT(event)">
+            </label>
+
+            <hr style="border: 0; border-top: 1px solid #2a363d; margin: 5px 0;">
+
+            <button class="btn-modal danger" style="width:100%;" onclick="solicitarLimpezaGeral()">🗑️ Resetar/Limpar Tudo</button>
+
+            <div class="modal-buttons">
+                <button class="btn-modal cancel" onclick="fecharModalDataBackup()">Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ESTADO GLOBAL DO APP
+        let jogadores = JSON.parse(localStorage.getItem('zs_jogadores')) || [];
+        let historicoJogos = JSON.parse(localStorage.getItem('zs_historico')) || [];
+        let contadorJogos = parseInt(localStorage.getItem('zs_contador')) || (historicoJogos.length + 1);
+
+        let jogadoresSelecionados = [];
+        let abaAtiva = null;
+        let histTimer = null;
+        let addTimer = null;
+        let isLongPressAdd = false;
+
+        // VARIÁVEIS PARA O FLUXO DE CONFIRMAÇÃO EM 2 ETAPAS (AUMENTADO PARA 6 SEGUNDOS)
+        let aguardandoSegundaConfirmacao = false;
+        let timerConfirmacao = null;
+        let tempoRestante = 6;
+        let intervalContagem = null;
+
+        function salvarEstadoLocal() {
+            localStorage.setItem('zs_jogadores', JSON.stringify(jogadores));
+            localStorage.setItem('zs_historico', JSON.stringify(historicoJogos));
+            localStorage.setItem('zs_contador', contadorJogos.toString());
+        }
+
+        function formatarIdJogo(numero) { return `#${String(numero).padStart(2, '0')}`; }
+
+        function dispararVibracao() {
+            if ('vibrate' in navigator) navigator.vibrate(50);
+        }
+
+        function obterDataHoraAtualFormatada() {
+            const agora = new Date();
+            const dia = String(agora.getDate()).padStart(2, '0');
+            const mes = String(agora.getMonth() + 1).padStart(2, '0');
+            const horas = String(agora.getHours()).padStart(2, '0');
+            const minutos = String(agora.getMinutes()).padStart(2, '0');
+            return `${dia}/${mes} às ${horas}:${minutos}`;
+        }
+
+        function garantirFullscreen() {
+            if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+                const elem = document.documentElement;
+                if (elem.requestFullscreen) {
+                    elem.requestFullscreen().catch(() => {});
+                } else if (elem.webkitRequestFullscreen) {
+                    elem.webkitRequestFullscreen();
+                }
+            }
+        }
+
+        // VALIDAR RESTRIÇÃO DE DÍGITO ÚNICO (APENAS 0, 1, 2, 3, 4, 5, 6)
+        function validarDigitoUnico(input) {
+            input.value = input.value.replace(/[^0-6]/g, '');
+            if (input.value.length > 1) {
+                input.value = input.value.charAt(0);
+            }
+            // Se o usuário mexer nos números enquanto aguarda confirmação, cancelamos o estado pendente
+            if (aguardandoSegundaConfirmacao) {
+                cancelarEstadoConfirmacao();
+            }
+        }
+
+        function iniciarAplicativo() {
+            garantirFullscreen();
+            document.getElementById('landingScreen').style.display = 'none';
+            document.getElementById('dashboardScreen').style.display = 'flex';
+            document.body.classList.add('app-active');
+
+            renderizarTabela();
+            configurarCompartilhamentos();
+            configurarEventosHist();
+            configurarEventosAdd();
+        }
+
+        // ORDENAÇÃO: Pontos Decrescente -> Nome Crescente (Ordem Alfabética)
+        function ordenarJogadores(lista) {
+            return lista.sort((a, b) => {
+                if (a.status === 'abandonou' && b.status !== 'abandonou') return 1;
+                if (a.status !== 'abandonou' && b.status === 'abandonou') return -1;
+
+                if (b.pontosTotais !== a.pontosTotais) {
+                    return b.pontosTotais - a.pontosTotais;
+                }
+                return a.nome.localeCompare(b.nome, 'pt-BR', { sensitivity: 'base' });
+            });
+        }
+
+        function renderizarTabela() {
+            ordenarJogadores(jogadores);
+
+            const tbody = document.getElementById('rankingTableBody');
+            tbody.innerHTML = '';
+
+            if (jogadores.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding: 20px; color: var(--text-muted);">Nenhum jogador cadastrado. Clique no botão 'Add' para começar.</td></tr>`;
+                return;
+            }
+
+            let posicaoAtiva = 1;
+
+            jogadores.forEach((jogador) => {
+                const tr = document.createElement('tr');
+                tr.className = 'player-row';
+                
+                if (jogador.status === 'abandonou') {
+                    tr.classList.add('abandoned-row');
+                }
+
+                if (jogadoresSelecionados.some(p => p.id === jogador.id)) {
+                    tr.classList.add('selected-for-match');
+                }
+
+                tr.onclick = () => selecionarJogador(jogador);
+
+                let indicadorClass = 'trend-neutral';
+                let indicadorTexto = '0';
+                if (jogador.variacaoSemana > 0) {
+                    indicadorClass = 'trend-up';
+                    indicadorTexto = `▲+${jogador.variacaoSemana}`;
+                } else if (jogador.variacaoSemana < 0) {
+                    indicadorClass = 'trend-down';
+                    indicadorTexto = `▼${jogador.variacaoSemana}`;
+                }
+
+                const posExibicao = jogador.status === 'abandonou' ? '-' : `${posicaoAtiva++}º`;
+
+                tr.innerHTML = `
+                    <td class="col-pos"><span class="badge-pos">${posExibicao}</span></td>
+                    <td class="col-jogador player-name">${jogador.nome} ${jogador.status === 'abandonou' ? '(Aba.)' : ''}</td>
+                    <td></td>
+                    <td>${jogador.jogos}</td>
+                    <td><strong>${jogador.vitorias}</strong></td>
+                    <td>${jogador.ptsGanhos}</td>
+                    <td>${jogador.ptsPerdidos}</td>
+                    <td><strong>${jogador.pontosTotais}</strong></td>
+                    <td class="${indicadorClass}">${indicadorTexto}</td>
+                `;
+
+                tbody.appendChild(tr);
+            });
+        }
+
+        // --- CONFIGURAÇÃO DO BOTÃO ADD (TOQUE RÁPIDO VS LONG PRESS) ---
+        function configurarEventosAdd() {
+            const btnAdd = document.getElementById('btnAdd');
+
+            const iniciarPress = () => {
+                isLongPressAdd = false;
+                addTimer = setTimeout(() => {
+                    isLongPressAdd = true;
+                    dispararVibracao();
+                    abrirModalGerenciarJogadores();
+                }, 800);
+            };
+
+            const cancelarPress = () => {
+                if (addTimer) clearTimeout(addTimer);
+            };
+
+            btnAdd.addEventListener('mousedown', iniciarPress);
+            btnAdd.addEventListener('mouseup', cancelarPress);
+            btnAdd.addEventListener('mouseleave', cancelarPress);
+
+            btnAdd.addEventListener('touchstart', (e) => {
+                iniciarPress();
+            }, { passive: true });
+
+            btnAdd.addEventListener('touchend', cancelarPress);
+
+            btnAdd.addEventListener('click', () => {
+                if (!isLongPressAdd) {
+                    dispararVibracao();
+                    abrirModalAdicionarJogador();
+                }
+            });
+        }
+
+        // 1. MODAL ADICIONAR JOGADOR (TOQUE RÁPIDO)
+        function abrirModalAdicionarJogador() {
+            document.getElementById('quickPlayerName').value = '';
+            document.getElementById('addPlayerModal').style.display = 'flex';
+            setTimeout(() => document.getElementById('quickPlayerName').focus(), 100);
+        }
+
+        function fecharModalAdicionarJogador() {
+            document.getElementById('addPlayerModal').style.display = 'none';
+            garantirFullscreen();
+        }
+
+        function confirmarNovoJogadorRapido() {
+            const input = document.getElementById('quickPlayerName');
+            const nome = input.value.trim();
+
+            if (nome !== '') {
+                jogadores.push({
+                    id: Date.now(),
+                    nome: nome,
+                    jogos: 0,
+                    vitorias: 0,
+                    ptsGanhos: 0,
+                    ptsPerdidos: 0,
+                    pontosTotais: 0,
+                    variacaoSemana: 0,
+                    status: 'ativo'
+                });
+                salvarEstadoLocal();
+                renderizarTabela();
+                fecharModalAdicionarJogador();
+                dispararVibracao();
+            }
+        }
+
+        // 2. MODAL GERENCIAR JOGADORES (LONG PRESS NO ADD)
+        function abrirModalGerenciarJogadores() {
+            renderizarListaGerenciarJogadores();
+            document.getElementById('managePlayersModal').style.display = 'flex';
+        }
+
+        function fecharModalGerenciarJogadores() {
+            document.getElementById('managePlayersModal').style.display = 'none';
+            salvarEstadoLocal();
+            renderizarTabela();
+            garantirFullscreen();
+        }
+
+        function renderizarListaGerenciarJogadores() {
+            const container = document.getElementById('playersManageList');
+            container.innerHTML = '';
+
+            if (jogadores.length === 0) {
+                container.innerHTML = `<div style="text-align:center; color: var(--text-muted); padding: 10px;">Nenhum jogador cadastrado.</div>`;
+                return;
+            }
+
+            jogadores.forEach((jogador) => {
+                const div = document.createElement('div');
+                div.className = 'player-manage-item';
+
+                const isAbandonou = jogador.status === 'abandonou';
+
+                div.innerHTML = `
+                    <input type="text" value="${jogador.nome}" onchange="atualizarNomeJogador(${jogador.id}, this.value)">
+                    <div class="player-manage-actions">
+                        <button class="btn-sm ${isAbandonou ? 'btn-status-abandoned' : 'btn-status-active'}" onclick="alternarStatusJogador(${jogador.id})">
+                            ${isAbandonou ? 'Abandonou' : 'Ativo'}
+                        </button>
+                        <button class="btn-sm" style="background-color: var(--danger); color:#fff;" onclick="excluirJogador(${jogador.id})">✕</button>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function atualizarNomeJogador(id, novoNome) {
+            const jogador = jogadores.find(j => j.id === id);
+            if (jogador && novoNome.trim() !== '') {
+                jogador.nome = novoNome.trim();
+                salvarEstadoLocal();
+            }
+        }
+
+        function alternarStatusJogador(id) {
+            const jogador = jogadores.find(j => j.id === id);
+            if (jogador) {
+                jogador.status = jogador.status === 'abandonou' ? 'ativo' : 'abandonou';
+                salvarEstadoLocal();
+                renderizarListaGerenciarJogadores();
+            }
+        }
+
+        function excluirJogador(id) {
+            if (confirm("Deseja realmente excluir este jogador?")) {
+                jogadores = jogadores.filter(j => j.id !== id);
+                jogadoresSelecionados = jogadoresSelecionados.filter(j => j.id !== id);
+                salvarEstadoLocal();
+                renderizarListaGerenciarJogadores();
+                atualizarPainelJogo();
+            }
+        }
+
+        // --- CONFIGURAÇÃO DO BOTÃO HIST (TOQUE RÁPIDO VS LONG PRESS) ---
+        function configurarEventosHist() {
+            const btnHist = document.getElementById('btnHist');
+
+            const iniciarPress = () => {
+                histTimer = setTimeout(() => {
+                    dispararVibracao();
+                    abrirModalDataBackup();
+                }, 800);
+            };
+
+            const cancelarPress = () => {
+                if (histTimer) clearTimeout(histTimer);
+            };
+
+            btnHist.addEventListener('mousedown', iniciarPress);
+            btnHist.addEventListener('mouseup', cancelarPress);
+            btnHist.addEventListener('mouseleave', cancelarPress);
+
+            btnHist.addEventListener('touchstart', (e) => {
+                iniciarPress();
+            }, { passive: true });
+
+            btnHist.addEventListener('touchend', cancelarPress);
+
+            btnHist.addEventListener('click', () => {
+                toggleSubPainel('hist');
+            });
+        }
+
+        function abrirModalDataBackup() {
+            document.getElementById('dataBackupModal').style.display = 'flex';
+        }
+
+        function fecharModalDataBackup() {
+            document.getElementById('dataBackupModal').style.display = 'none';
+            garantirFullscreen();
+        }
+
+        // EXPORTAR & RESTAURAR BACKUP (FORMATO TXT / JSON INTERNO)
+        function exportarBackupTXT() {
+            dispararVibracao();
+            const payload = {
+                v: "2026.1",
+                dataExportacao: new Date().toISOString(),
+                jogadores: jogadores,
+                historicoJogos: historicoJogos,
+                contadorJogos: contadorJogos
+            };
+
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(payload, null, 2));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", `Backup_Ranking_ZS_${obterDataHoraAtualFormatada().replace(/[/ :]/g, '_')}.txt`);
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+        }
+
+        function restaurarBackupTXT(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if (data && data.jogadores && data.historicoJogos) {
+                        jogadores = data.jogadores;
+                        historicoJogos = data.historicoJogos;
+                        contadorJogos = data.contadorJogos || (historicoJogos.length + 1);
+
+                        salvarEstadoLocal();
+                        renderizarTabela();
+                        fecharModalDataBackup();
+                        alert("Dados restaurados com sucesso!");
+                    } else {
+                        alert("Formato de arquivo inválido!");
+                    }
+                } catch (err) {
+                    alert("Erro ao ler o arquivo de backup.");
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function solicitarLimpezaGeral() {
+            const senha = prompt("Digite a senha para resetar TODOS os dados do app:");
+            if (senha === "JaPa2026") {
+                localStorage.clear();
+                jogadores = [];
+                historicoJogos = [];
+                contadorJogos = 1;
+                jogadoresSelecionados = [];
+
+                salvarEstadoLocal();
+                renderizarTabela();
+                atualizarPainelJogo();
+                fecharModalDataBackup();
+                alert("Todos os dados foram resetados!");
+            } else if (senha !== null) {
+                alert("Senha incorreta!");
+            }
+        }
+
+        // COMPARTILHAMENTO
+        function configurarCompartilhamentos() {
+            document.getElementById('btnPrintShare').addEventListener('click', async () => {
+                dispararVibracao();
+                const elemento = document.getElementById('rankingPanelToCapture');
+                const dataHoraStr = obterDataHoraAtualFormatada();
+                const legenda = `Confira a classificação atualizada do Ranking Zona Sul!\n📊 Gerado em ${dataHoraStr}`;
+                await compartilharImagemElemento(elemento, 'Ranking_Zona_Sul.png', legenda);
+            });
+
+            document.getElementById('btnSubPanelShare').addEventListener('click', async () => {
+                dispararVibracao();
+                const dataHoraStr = obterDataHoraAtualFormatada();
+
+                if (abaAtiva === 'semana') {
+                    const elemento = document.getElementById('subPanel');
+                    const legenda = `Confira os jogos realizados nesta semana no Ranking Zona Sul!\n🎾 Gerado em ${dataHoraStr}`;
+                    await compartilharImagemElemento(elemento, 'Jogos_Da_Semana.png', legenda);
+                } else if (abaAtiva === 'hist') {
+                    compartilharHistoricoGeralTXT(dataHoraStr);
+                }
+            });
+        }
+
+        async function compartilharImagemElemento(elemento, nomeArquivo, mensagemTexto) {
+            try {
+                const canvas = await html2canvas(elemento, { backgroundColor: '#1e272c', scale: 2 });
+                canvas.toBlob(async (blob) => {
+                    if (!blob) return;
+                    const arquivo = new File([blob], nomeArquivo, { type: 'image/png' });
+
+                    if (navigator.share && navigator.canShare({ files: [arquivo] })) {
+                        await navigator.share({ files: [arquivo], title: 'Ranking Zona Sul', text: mensagemTexto });
+                    } else {
+                        alert("Navegador não suporta compartilhamento direto de imagens");
+                    }
+                }, 'image/png');
+            } catch (err) {
+                console.error('Erro na captura:', err);
+            }
+        }
+
+        async function compartilharHistoricoGeralTXT(dataHoraStr) {
+            let conteudoTxt = `=====================================\n`;
+            conteudoTxt += `   RANKING ZONA SUL - HISTÓRICO GERAL\n`;
+            conteudoTxt += `   Gerado em ${dataHoraStr}\n`;
+            conteudoTxt += `=====================================\n\n`;
+
+            if (historicoJogos.length === 0) {
+                conteudoTxt += `Nenhum jogo registrado até o momento.\n`;
+            } else {
+                historicoJogos.forEach(j => {
+                    conteudoTxt += `${j.idJogo} | ${j.data}\n`;
+                    conteudoTxt += `   Vencedor: ${j.vencedor} (+${j.ptsGanhos} pts)\n`;
+                    conteudoTxt += `   Perdedor: ${j.perdedor} (${j.ptsPerdidos} pts)\n`;
+                    conteudoTxt += `   Placar: ${j.placar}\n`;
+                    conteudoTxt += `-------------------------------------\n`;
+                });
+            }
+
+            const blob = new Blob([conteudoTxt], { type: 'text/plain;charset=utf-8' });
+            const arquivoTxt = new File([blob], 'Historico_Geral.txt', { type: 'text/plain' });
+
+            if (navigator.share && navigator.canShare({ files: [arquivoTxt] })) {
+                await navigator.share({ files: [arquivoTxt], title: 'Histórico Geral', text: `Relatório de jogos` });
+            } else {
+                alert("Navegador não suporta compartilhamento de TXT");
+            }
+        }
+
+        function jaJogaramNaSemana(id1, id2) {
+            return historicoJogos.some(j => 
+                j.isSemanaAtual && 
+                ((j.vencedorId === id1 && j.perdedorId === id2) || (j.vencedorId === id2 && j.perdedorId === id1))
+            );
+        }
+
+        function selecionarJogador(jogador) {
+            if (jogador.status === 'abandonou') {
+                falarAviso("Jogador com status Abandonou");
+                return;
+            }
+
+            dispararVibracao();
+            cancelarEstadoConfirmacao();
+
+            const index = jogadoresSelecionados.findIndex(p => p.id === jogador.id);
+
+            if (index > -1) {
+                jogadoresSelecionados.splice(index, 1);
+            } else {
+                if (jogadoresSelecionados.length === 0) {
+                    jogadoresSelecionados.push(jogador);
+                } else {
+                    const primeiroJogador = jogadoresSelecionados[0];
+                    if (jaJogaramNaSemana(primeiroJogador.id, jogador.id)) {
+                        falarAviso("Estes jogadores já jogaram entre si esta semana");
+                        return;
+                    }
+
+                    if (jogadoresSelecionados.length === 1) {
+                        jogadoresSelecionados.push(jogador);
+                    } else {
+                        jogadoresSelecionados[1] = jogador;
+                    }
+                }
+            }
+
+            atualizarPainelJogo();
+            renderizarTabela();
+        }
+
+        function limparSlot(slotIndex) {
+            dispararVibracao();
+            cancelarEstadoConfirmacao();
+            if (jogadoresSelecionados[slotIndex]) {
+                jogadoresSelecionados.splice(slotIndex, 1);
+                atualizarPainelJogo();
+                renderizarTabela();
+            }
+        }
+
+        function atualizarPainelJogo() {
+            const slot1 = document.getElementById('slotPlayer1');
+            const slot2 = document.getElementById('slotPlayer2');
+
+            if (jogadoresSelecionados[0]) {
+                slot1.textContent = jogadoresSelecionados[0].nome;
+                slot1.classList.add('selected');
+            } else {
+                slot1.textContent = "Jogador 1";
+                slot1.classList.remove('selected');
+            }
+
+            if (jogadoresSelecionados[1]) {
+                slot2.textContent = jogadoresSelecionados[1].nome;
+                slot2.classList.add('selected');
+            } else {
+                slot2.textContent = "Jogador 2";
+                slot2.classList.remove('selected');
+            }
+        }
+
+        function falarResultado(vencedor, ptsGanhos, perdedor, ptsPerdidos, placar) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const textoParaFalar = `${vencedor} mais ${ptsGanhos}, x, ${perdedor} ${ptsPerdidos}, placar ${placar.replace('x', ' a ')}`;
+                const utterance = new SpeechSynthesisUtterance(textoParaFalar);
+                utterance.lang = 'pt-BR';
+                utterance.rate = 1.0;
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        function falarAviso(texto) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(texto);
+                utterance.lang = 'pt-BR';
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        // VALIDAÇÃO DE PLACARES VÁLIDOS DE TÊNIS (4 OU 6 GAMES)
+        function ePlacarValido(s1, s2) {
+            const v = Math.max(s1, s2);
+            const p = Math.min(s1, s2);
+
+            // Jogo de 4 Games: 4x0, 4x1, 4x2, 4x3
+            if (v === 4 && (p >= 0 && p <= 3)) return true;
+
+            // Jogo de 6 Games: 6x0, 6x1, 6x2, 6x3, 6x4, 6x5
+            if (v === 6 && (p >= 0 && p <= 5)) return true;
+
+            return false;
+        }
+
+        // CANCELAR TEMPORIZADOR E RESTAURAR BOTÃO DE CONFIRMAÇÃO
+        function cancelarEstadoConfirmacao() {
+            if (timerConfirmacao) clearTimeout(timerConfirmacao);
+            if (intervalContagem) clearInterval(intervalContagem);
+            aguardandoSegundaConfirmacao = false;
+
+            const btnConfirmar = document.getElementById('btnConfirmar');
+            btnConfirmar.classList.remove('pending-confirm');
+            btnConfirmar.textContent = 'Confirmar';
+        }
+
+        function salvarJogo() {
+            dispararVibracao();
+
+            // CASO JÁ ESTEJA AGUARDANDO A SEGUNDA CONFIRMAÇÃO (SEGUNDO CLIQUE)
+            if (aguardandoSegundaConfirmacao) {
+                efetivarSalvarJogo();
+                return;
+            }
+
+            // PRIMEIRO CLIQUE: VALIDAÇÃO E INÍCIO DO TEMPORIZADOR DE 6 SEGUNDOS
+            if (jogadoresSelecionados.length < 2) {
+                falarAviso("Selecione dois jogadores");
+                return;
+            }
+
+            const val1 = document.getElementById('score1').value.trim();
+            const val2 = document.getElementById('score2').value.trim();
+
+            if (val1 === '' || val2 === '') {
+                falarAviso("Informe o resultado correto");
+                return;
+            }
+
+            const score1 = parseInt(val1, 10);
+            const score2 = parseInt(val2, 10);
+
+            // Validação de Placar Válido para Tênis (4 ou 6 games)
+            if (!ePlacarValido(score1, score2)) {
+                falarAviso("Placar Final de jogo Inválido, não corresponde a um jogo de 4 ou 6 games válidos para pontuar no Ranking.");
+                return;
+            }
+
+            // CALCULAR RESULTADO TEMPORÁRIO PARA LEITURA DE ÁUDIO
+            const p1 = jogadoresSelecionados[0];
+            const p2 = jogadoresSelecionados[1];
+            const maxGames = Math.max(score1, score2);
+            let ptsVencedor = maxGames === 6 ? 50 : 30;
+            let ptsPerdedorVal = maxGames === 6 ? -10 : -5;
+
+            let nomeVencedor, nomePerdedor, placarStr;
+            if (score1 > score2) {
+                nomeVencedor = p1.nome;
+                nomePerdedor = p2.nome;
+                placarStr = `${score1}x${score2}`;
+            } else {
+                nomeVencedor = p2.nome;
+                nomePerdedor = p1.nome;
+                placarStr = `${score2}x${score1}`;
+            }
+
+            // INICIAR ÁUDIO DA PREVIA DO RESULTADO
+            falarResultado(nomeVencedor, ptsVencedor, nomePerdedor, ptsPerdedorVal, placarStr);
+
+            // ATIVAR MODO DE ESPERA DE CONFIRMAÇÃO (VERMELHO POR 6 SEGUNDOS)
+            aguardandoSegundaConfirmacao = true;
+            tempoRestante = 6;
+
+            const btnConfirmar = document.getElementById('btnConfirmar');
+            btnConfirmar.classList.add('pending-confirm');
+            btnConfirmar.textContent = `Salvar (${tempoRestante}s)`;
+
+            intervalContagem = setInterval(() => {
+                tempoRestante--;
+                if (tempoRestante > 0) {
+                    btnConfirmar.textContent = `Salvar (${tempoRestante}s)`;
+                }
+            }, 1000);
+
+            timerConfirmacao = setTimeout(() => {
+                cancelarEstadoConfirmacao();
+            }, 6000);
+        }
+
+        // GRAVAR DEFINITIVAMENTE NO BANCO DE DADOS LOCAL
+        function efetivarSalvarJogo() {
+            const val1 = document.getElementById('score1').value.trim();
+            const val2 = document.getElementById('score2').value.trim();
+            const score1 = parseInt(val1, 10);
+            const score2 = parseInt(val2, 10);
+
+            const p1 = jogadoresSelecionados[0];
+            const p2 = jogadoresSelecionados[1];
+
+            const maxGames = Math.max(score1, score2);
+            let ptsVencedor = maxGames === 6 ? 50 : 30;
+            let ptsPerdedorVal = maxGames === 6 ? -10 : -5;
+
+            p1.jogos += 1;
+            p2.jogos += 1;
+            p1.ptsGanhos += score1;
+            p1.ptsPerdidos += score2;
+            p2.ptsGanhos += score2;
+            p2.ptsPerdidos += score1;
+
+            let nomeVencedor, idVencedor, nomePerdedor, idPerdedor, placarStr;
+
+            if (score1 > score2) {
+                p1.vitorias += 1;
+                p1.pontosTotais += ptsVencedor;
+                p1.variacaoSemana += ptsVencedor;
+                p2.pontosTotais += ptsPerdedorVal;
+                p2.variacaoSemana += ptsPerdedorVal;
+                
+                nomeVencedor = p1.nome; idVencedor = p1.id;
+                nomePerdedor = p2.nome; idPerdedor = p2.id;
+                placarStr = `${score1}x${score2}`;
+            } else {
+                p2.vitorias += 1;
+                p2.pontosTotais += ptsVencedor;
+                p2.variacaoSemana += ptsVencedor;
+                p1.pontosTotais += ptsPerdedorVal;
+                p1.variacaoSemana += ptsPerdedorVal;
+
+                nomeVencedor = p2.nome; idVencedor = p2.id;
+                nomePerdedor = p1.nome; idPerdedor = p1.id;
+                placarStr = `${score2}x${score1}`;
+            }
+
+            const hoje = new Date();
+            const dia = String(hoje.getDate()).padStart(2, '0');
+            const mes = String(hoje.getMonth() + 1).padStart(2, '0');
+            const dataStr = `${dia}/${mes}`;
+
+            const idJogoAtual = formatarIdJogo(contadorJogos++);
+
+            historicoJogos.unshift({
+                idJogo: idJogoAtual,
+                data: dataStr,
+                vencedor: nomeVencedor,
+                vencedorId: idVencedor,
+                ptsGanhos: ptsVencedor,
+                perdedor: nomePerdedor,
+                perdedorId: idPerdedor,
+                ptsPerdidos: ptsPerdedorVal,
+                placar: placarStr,
+                isSemanaAtual: true
+            });
+
+            salvarEstadoLocal();
+            cancelarEstadoConfirmacao();
+
+            // LIMPAR OS CAMPOS APÓS SALVAR
+            jogadoresSelecionados = [];
+            document.getElementById('score1').value = '';
+            document.getElementById('score2').value = '';
+
+            atualizarPainelJogo();
+            renderizarTabela();
+
+            if (abaAtiva) renderizarSubPainel(abaAtiva);
+        }
+
+        function toggleSubPainel(tipo) {
+            dispararVibracao();
+            const subPanel = document.getElementById('subPanel');
+            const btnHist = document.getElementById('btnHist');
+            const btnSemana = document.getElementById('btnSemana');
+
+            if (abaAtiva === tipo) {
+                fecharSubPainel();
+                return;
+            }
+
+            abaAtiva = tipo;
+            subPanel.style.display = 'block';
+
+            if (tipo === 'hist') {
+                btnHist.classList.add('active');
+                btnSemana.classList.remove('active');
+                document.getElementById('subPanelTitle').textContent = "Histórico de Jogos (Geral)";
+            } else {
+                btnSemana.classList.add('active');
+                btnHist.classList.remove('active');
+                document.getElementById('subPanelTitle').textContent = "Jogos da Semana";
+            }
+
+            renderizarSubPainel(tipo);
+        }
+
+        function fecharSubPainel() {
+            document.getElementById('subPanel').style.display = 'none';
+            document.getElementById('btnHist').classList.remove('active');
+            document.getElementById('btnSemana').classList.remove('active');
+            abaAtiva = null;
+        }
+
+        function renderizarSubPainel(tipo) {
+            const container = document.getElementById('historyListContainer');
+            container.innerHTML = '';
+
+            const lista = tipo === 'semana' 
+                ? historicoJogos.filter(j => j.isSemanaAtual)
+                : historicoJogos;
+
+            if (lista.length === 0) {
+                container.innerHTML = `<div style="text-align:center; color: var(--text-muted); padding: 10px;">Nenhum jogo registrado.</div>`;
+                return;
+            }
+
+            lista.forEach(j => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'game-history-item';
+                
+                const strGanhos = j.ptsGanhos > 0 ? `+${j.ptsGanhos}` : `${j.ptsGanhos}`;
+                const strPerdidos = j.ptsPerdidos > 0 ? `-${j.ptsPerdidos}` : `${j.ptsPerdidos}`;
+
+                itemDiv.innerHTML = `
+                    <span class="hist-id">${j.idJogo}</span>
+                    <span class="hist-data">${j.data}</span>
+                    <span class="hist-vencedor">${j.vencedor}</span>
+                    <span class="hist-pts-ganhos">${strGanhos}</span>
+                    <span style="color:var(--text-muted);">x</span>
+                    <span class="hist-perdedor">${j.perdedor}</span>
+                    <span class="hist-pts-perdidos">${strPerdidos}</span>
+                    <span class="hist-placar">(${j.placar})</span>
+                `;
+                container.appendChild(itemDiv);
+            });
+        }
+
+        // SERVICE WORKER PARA PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                const swCode = `
+                    self.addEventListener('install', e => self.skipWaiting());
+                    self.addEventListener('activate', e => self.clients.claim());
+                    self.addEventListener('fetch', e => {
+                        e.respondWith(fetch(e.request).catch(() => caches.match(e.request)));
+                    });
+                `;
+                const blobSW = new Blob([swCode], { type: 'text/javascript' });
+                const urlSW = URL.createObjectURL(blobSW);
+
+                navigator.serviceWorker.register(urlSW)
+                    .then(() => console.log('Service Worker Registrado'))
+                    .catch(err => console.log('Erro SW:', err));
+            });
+        }
+    </script>
+</body>
+</html>
