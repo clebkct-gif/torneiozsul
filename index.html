@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Ranking Zona Sul - Tênis</title>
 
     <!-- Meta tags para PWA e Mobile -->
@@ -45,568 +45,137 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
     <style>
-        :root {
-            --bg-color: #12181b;
-            --card-bg: #1e272c;
-            --accent-green-bright: #00e676; 
-            --accent-green-hover: #00c853;  
-            --accent-green-btn: #11381e;
-            --text-color: #ffffff;
-            --text-muted: #b0bec5;          
-            --danger: #ff5252;
-            --warning: #ffb300;
-            --success: #69f0ae;
-            --btn-bg: #2a363d;
-            --landing-bg: #f4f4f4;
-            --yellow-badge: #ffeb3b;        
-        }
-
-        * { box-sizing: border-box; }
-
-        body {
-            font-family: 'Rajdhani', 'Segoe UI', system-ui, sans-serif;
-            margin: 0;
-            padding: 0;
-            min-height: 100vh;
-            background-color: var(--landing-bg);
-            color: #333333;
-            overflow-x: hidden;
-        }
-
-        /* LANDING SCREEN */
-        .landing-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            min-height: 100vh;
-            text-align: center;
-            padding: 20px 20px 40px 20px;
-            background-color: var(--landing-bg);
-            position: relative;
-        }
-
-        .logo-wrapper {
-            margin-top: 10px;
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-        }
-
-        .logo-img {
-            max-width: 320px;
-            width: 85%;
-            height: auto;
-            mix-blend-mode: multiply;
-            transition: transform 0.3s ease;
-        }
-
-        .logo-img:hover { transform: scale(1.02); }
-
-        .btn-neon-start {
-            font-family: 'Rajdhani', 'Orbitron', sans-serif;
-            font-size: 2.2rem;
-            font-weight: 900;
-            line-height: 1;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            color: #ffffff;
-            background: linear-gradient(135deg, #1e5631, #11381e);
-            padding: 18px 30px;
-            margin-top: 35px;
-            border: 2px solid #0d2c18;
-            border-radius: 50px;
-            cursor: pointer;
-            outline: none;
-            width: 90%;
-            max-width: 340px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            animation: darkNeonPulse 2s infinite ease-in-out alternate;
-            transition: transform 0.2s, background 0.3s;
-        }
-
-        @keyframes darkNeonPulse {
-            0% { box-shadow: 0 0 5px #11381e, 0 0 15px rgba(17, 56, 30, 0.6); text-shadow: 0 0 4px #ffffff; transform: scale(1); }
-            50% { box-shadow: 0 0 2px #0d2c18, 0 0 8px rgba(13, 44, 24, 0.4); text-shadow: 0 0 2px #ffffff; transform: scale(0.98); }
-            100% { box-shadow: 0 0 12px #00e676, 0 0 25px rgba(0, 230, 118, 0.5); text-shadow: 0 0 6px #ffffff; transform: scale(1.02); }
-        }
-
-        .btn-neon-start:active { transform: scale(0.95) !important; }
-
-        .landing-subtitle {
-            margin-top: 20px;
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 1.05rem;
-            color: #222222;
-            font-weight: 800;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-        }
-
-        /* DASHBOARD */
-        .dashboard-container {
-            display: none;
-            width: 100%;
-            max-width: 600px;
-            margin: 0 auto;
-            flex-direction: column;
-            gap: 6px;
-            padding: 6px;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            min-height: 100vh;
-        }
-
-        body.app-active {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-        }
-
-        .match-panel {
-            background-color: var(--card-bg);
-            padding: 8px;
-            border-radius: 8px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.4);
-            border-top: 3px solid var(--accent-green-bright);
-        }
-
-        .match-builder {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 4px;
-        }
-
-        .player-slot {
-            background-color: #2a363d;
-            padding: 8px 4px;
-            border-radius: 6px;
-            flex: 1;
-            font-size: 0.95rem;
-            font-weight: bold;
-            border: 1px dashed var(--accent-green-bright);
-            color: #ffffff;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            text-align: center;
-            cursor: pointer;
-            user-select: none;
-        }
-
-        .player-slot.selected {
-            border-style: solid;
-            background-color: #11381e;
-            color: var(--accent-green-bright);
-        }
-
-        .score-input {
-            width: 42px;
-            padding: 6px 2px;
-            text-align: center;
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 1.1rem;
-            font-weight: bold;
-            border-radius: 4px;
-            border: 1px solid #445560;
-            background-color: #12181b;
-            color: #fff;
-            outline: none;
-        }
-
-        .vs-divider { font-size: 0.9rem; font-weight: bold; color: var(--text-muted); }
-
-        .action-buttons {
-            display: flex;
-            gap: 4px;
-            margin-top: 6px;
-        }
-
-        .btn-action {
-            flex: 1;
-            padding: 8px 2px;
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 0.95rem;
-            font-weight: 800;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            background-color: var(--btn-bg);
-            color: var(--text-color);
-            user-select: none;
-            touch-action: manipulation;
-            transition: background-color 0.2s;
-        }
-
-        .btn-action.primary { background-color: #11381e; color: #ffffff; }
-
-        .btn-action.pending-confirm {
-            background-color: var(--danger) !important;
-            color: #ffffff !important;
-            animation: pulseWarning 1s infinite alternate;
-        }
-
-        @keyframes pulseWarning {
-            0% { opacity: 1; }
-            100% { opacity: 0.8; }
-        }
-
-        .btn-action.active { background-color: #11381e; color: var(--accent-green-bright); border-bottom: 2px solid var(--accent-green-bright); }
-        .btn-action:active { opacity: 0.8; }
-
-        .ranking-panel {
-            background-color: var(--card-bg);
-            border-radius: 8px;
-            padding: 4px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.4);
-            flex: 1;
-        }
-
-        .table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-
-        table { width: 100%; border-collapse: collapse; text-align: left; }
-        th, td { padding: 6px 3px; border-bottom: 1px solid #2a363d; white-space: nowrap; }
-        th.col-pos, td.col-pos { padding-right: 2px; width: 1%; }
-        th.col-jogador, td.col-jogador { padding-left: 2px; }
-
-        .btn-print-trigger { width: 15px; padding: 0 4px; cursor: pointer; opacity: 0; user-select: none; }
-
-        th {
-            background-color: #182024;
-            color: var(--accent-green-bright);
-            font-weight: 800;
-            font-size: 0.85rem;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-        }
-
-        tr.player-row td { font-size: 0.98rem; }
-        tr.player-row td.player-name { font-size: 1.05rem; font-weight: 700; color: #ffffff; }
-        tr.player-row { cursor: pointer; }
-        tr.player-row.selected-for-match { background-color: #11381e; border-left: 3px solid var(--accent-green-bright); }
-        
-        tr.player-row.abandoned-row { opacity: 0.55; background-color: rgba(255, 82, 82, 0.05); }
-        tr.player-row.abandoned-row td.player-name { text-decoration: line-through; color: var(--text-muted); }
-
-        .trend-up { color: var(--success); font-weight: bold; }
-        .trend-down { color: var(--danger); font-weight: bold; }
-        .trend-neutral { color: var(--text-muted); }
-
-        .badge-pos {
-            background-color: #12181b;
-            padding: 2px 4px;
-            border-radius: 4px;
-            font-weight: 900;
-            font-size: 0.9rem;
-            color: var(--yellow-badge);
-            border: 1px solid rgba(255, 235, 59, 0.3);
-            cursor: pointer;
-            transition: transform 0.1s, background-color 0.2s;
-        }
-
-        .badge-pos:hover {
-            transform: scale(1.1);
-            background-color: #1a232a;
-        }
-
-        .sub-panel {
-            display: none;
-            background-color: var(--card-bg);
-            border-radius: 8px;
-            padding: 8px;
-            margin-top: 4px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.4);
-        }
-
-        .sub-panel-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
-            padding-bottom: 4px;
-            border-bottom: 1px solid #2a363d;
-        }
-
-        .sub-panel-title { font-size: 1rem; font-weight: 800; color: var(--accent-green-bright); display: flex; align-items: center; gap: 5px; }
-        .btn-close-panel { background: transparent; border: none; color: var(--text-muted); font-size: 1.1rem; cursor: pointer; }
-
-        .game-history-item {
-            padding: 8px 4px;
-            border-bottom: 1px solid #2a363d;
-            font-size: 0.95rem;
-            display: flex;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 6px;
-        }
-
-        .hist-id { background-color: #12181b; color: var(--accent-green-bright); font-weight: 800; padding: 1px 5px; border-radius: 4px; font-size: 0.85rem; border: 1px solid rgba(0, 230, 118, 0.3); }
-        .hist-data { color: var(--text-muted); font-weight: bold; }
-        .hist-vencedor, .hist-perdedor { font-weight: bold; color: #ffffff; }
-        .hist-pts-ganhos { color: var(--accent-green-bright); font-weight: 800; }
-        .hist-pts-perdidos { color: var(--danger); font-weight: 800; }
-        .hist-placar { font-weight: bold; color: #ffffff; }
-
-        /* MODAIS E PAINÉIS FLUTUANTES */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0;
-            width: 100vw; height: 100vh;
-            background-color: rgba(0, 0, 0, 0.85);
-            z-index: 9999;
-            align-items: center;
-            justify-content: center;
-            padding: 12px;
-        }
-
-        .modal-box {
-            background-color: var(--card-bg);
-            border-radius: 10px;
-            padding: 16px;
-            width: 100%;
-            max-width: 420px;
-            max-height: 90vh;
-            overflow-y: auto;
-            border-top: 4px solid var(--accent-green-bright);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .modal-title { color: #ffffff; font-size: 1.15rem; font-weight: bold; margin: 0; }
-        .modal-input {
-            width: 100%;
-            padding: 10px;
-            background-color: #12181b;
-            border: 1px solid #445560;
-            border-radius: 6px;
-            color: #ffffff;
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 1.05rem;
-            outline: none;
-        }
-
-        .modal-buttons { display: flex; justify-content: flex-end; gap: 8px; margin-top: 5px; }
-
-        .btn-modal {
-            padding: 8px 14px;
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 0.95rem;
-            font-weight: 700;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-        }
-
-        .btn-modal.cancel { background-color: var(--btn-bg); color: var(--text-color); }
-        .btn-modal.confirm { background-color: #11381e; color: #ffffff; }
-        .btn-modal.danger { background-color: var(--danger); color: #ffffff; }
-
-        /* LISTA DE EDIÇÃO DE JOGADORES */
-        .player-manage-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background-color: #12181b;
-            padding: 8px;
-            border-radius: 6px;
-            gap: 6px;
-        }
-
-        .player-manage-item input {
-            background: transparent;
-            border: none;
-            color: #fff;
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 1rem;
-            font-weight: bold;
-            flex: 1;
-        }
-
-        .player-manage-actions { display: flex; gap: 4px; }
-        .btn-sm { padding: 4px 8px; font-size: 0.8rem; border-radius: 4px; border: none; cursor: pointer; font-weight: bold; }
-        .btn-status-active { background-color: #11381e; color: var(--accent-green-bright); }
-        .btn-status-abandoned { background-color: #3d2a2a; color: var(--danger); }
-
-        /* ================================================= */
-        /* DESIGN PREMIUM DO MINI MANUAL INTEGRADO */
-        /* ================================================= */
-        .modal-box-manual {
-            max-width: 650px;
-            padding: 0;
-            overflow: hidden;
-            background: #182024;
-            color: #e0e6ed;
-            border: 1px solid #2a363d;
-            border-top: 4px solid var(--accent-green-bright);
-        }
-
-        .manual-container {
-            width: 100%;
-            max-height: 85vh;
-            overflow-y: auto;
-            background: #12181b;
-            font-family: 'Rajdhani', sans-serif;
-        }
-
-        .manual-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: #1e272c;
-            color: var(--accent-green-bright);
-            padding: 12px 16px;
-            border-bottom: 2px solid #2a363d;
-        }
-
-        .manual-header h3 {
-            margin: 0;
-            font-size: 1.25rem;
-            font-weight: 800;
-            letter-spacing: 0.5px;
-        }
-
-        .manual-body { padding: 12px; }
-
-        .manual-body .rules-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin-bottom: 12px;
-        }
-
-        .manual-body .rule-card {
-            background: #1e272c;
-            border-radius: 8px;
-            padding: 10px 12px;
-            border-left: 4px solid var(--accent-green-bright);
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-
-        .manual-body .rule-card.warning-card {
-            border-left-color: var(--warning);
-            background: rgba(255, 179, 0, 0.05);
-        }
-
-        .manual-body .rule-card-title {
-            font-size: 1.05rem;
-            font-weight: 800;
-            color: #ffffff;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .manual-body .rule-card-body {
-            font-size: 0.95rem;
-            color: var(--text-muted);
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            align-items: center;
-        }
-
-        .manual-body .pts-badge {
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-weight: 800;
-            font-size: 0.9rem;
-        }
-
-        .manual-body .pts-badge.win { background-color: #11381e; color: var(--accent-green-bright); border: 1px solid rgba(0, 230, 118, 0.3); }
-        .manual-body .pts-badge.loss { background-color: #3d2a2a; color: var(--danger); border: 1px solid rgba(255, 82, 82, 0.3); }
-
-        .manual-body .items-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .manual-body .item-card {
-            background: #1e272c;
-            padding: 10px 12px;
-            border-radius: 8px;
-            border: 1px solid #2a363d;
-        }
-
-        .manual-body .item-head {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 4px;
-        }
-
-        .manual-body .item-num {
-            background: var(--btn-bg);
-            color: var(--accent-green-bright);
-            font-weight: 900;
-            font-size: 0.9rem;
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .manual-body .item-title {
-            font-size: 1.05rem;
-            font-weight: 800;
-            color: #ffffff;
-        }
-
-        .manual-body ul { margin: 0; padding-left: 18px; }
-        .manual-body li { font-size: 0.95rem; color: var(--text-muted); margin-bottom: 2px; line-height: 1.3; }
-
-        .manual-body .legend-box {
-            margin-top: 12px;
-            background: #1e272c;
-            padding: 10px;
-            border-radius: 8px;
-            border: 1px solid #2a363d;
-        }
-
-        .manual-body .legend-title {
-            font-size: 1rem;
-            font-weight: 800;
-            color: var(--accent-green-bright);
-            margin-bottom: 8px;
-            text-transform: uppercase;
-        }
-
-        .manual-body .legend-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-            gap: 8px;
-        }
-
-        .manual-body .legend-item {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-        }
-
-        .manual-body .legend-item strong {
-            color: #ffffff;
-        }
-
-        .manual-body footer {
-            margin-top: 12px;
-            text-align: center;
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            padding-top: 8px;
-            border-top: 1px solid #2a363d;
-        }
-    </style>
+:root{--bg-color:#12181b;--card-bg:#1a2328;--raised:#243138;--deep:#11381e;--line:rgba(255,255,255,.06);
+--accent-green-bright:#00e676;--accent-green-btn:#11381e;--text-color:#fff;--text-muted:#9fb1ba;
+--danger:#ff5252;--warning:#ffb300;--success:#69f0ae;--btn-bg:#243138;--landing-bg:#ffffff;--yellow-badge:#ffeb3b}
+*{box-sizing:border-box}
+body{font-family:'Rajdhani','Segoe UI',system-ui,sans-serif;margin:0;min-height:100dvh;background:var(--landing-bg);color:#333;overflow-x:hidden;-webkit-tap-highlight-color:transparent}
+body.app-active{background:var(--bg-color);color:var(--text-color)}
+button,input{font-family:inherit}
+:focus-visible{outline:2px solid var(--accent-green-bright);outline-offset:2px}
+
+/* Tela inicial */
+.landing-container{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100dvh;text-align:center;padding:16px 16px 32px;background:var(--landing-bg)}
+.logo-wrapper{display:flex;justify-content:center;width:100%;margin-bottom:8px}
+.logo-img{max-width:340px;width:85%;height:auto;mix-blend-mode:multiply}
+.btn-neon-start{font-size:2.1rem;font-weight:900;line-height:1;letter-spacing:1.5px;text-transform:uppercase;color:#fff;background:linear-gradient(135deg,#1e5631,#11381e);padding:16px 28px;margin-top:24px;border:0;border-radius:50px;cursor:pointer;width:90%;max-width:340px;animation:glow 2s infinite ease-in-out alternate;transition:transform .2s}
+.btn-neon-start:active{transform:scale(.96)}
+@keyframes glow{from{box-shadow:0 0 6px rgba(17,56,30,.6)}to{box-shadow:0 0 22px rgba(0,230,118,.55)}}
+.landing-subtitle{margin-top:14px;font-size:1.05rem;font-weight:700;color:#444}
+
+/* Painel principal */
+.dashboard-container{display:none;width:100%;max-width:720px;margin:0 auto;flex-direction:column;gap:4px;padding:0 max(4px,env(safe-area-inset-right)) 6px max(4px,env(safe-area-inset-left));background:var(--bg-color);color:var(--text-color);min-height:100dvh}
+.match-panel{position:sticky;top:0;z-index:5;background:var(--card-bg);padding:max(6px,env(safe-area-inset-top)) 6px 6px;border-radius:0 0 10px 10px}
+.match-builder{display:flex;align-items:center;gap:4px}
+.player-slot{flex:1;min-width:0;padding:9px 4px;border-radius:6px;background:var(--raised);color:var(--text-muted);box-shadow:inset 0 0 0 1px rgba(0,230,118,.3);font-size:1rem;font-weight:700;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;user-select:none}
+.player-slot.selected{background:var(--deep);color:var(--accent-green-bright);box-shadow:inset 0 0 0 1px var(--accent-green-bright)}
+.score-input{width:38px;height:38px;padding:0;text-align:center;font-size:1.3rem;font-weight:700;border:0;border-radius:6px;background:var(--bg-color);color:#fff;outline:0}
+.score-input:focus{box-shadow:0 0 0 2px var(--accent-green-bright)}
+.vs-divider{font-size:.9rem;font-weight:700;color:var(--text-muted)}
+.action-buttons{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px}
+.btn-action{flex:1;padding:8px 2px;font-size:1rem;font-weight:800;border:0;border-radius:6px;cursor:pointer;background:var(--btn-bg);color:var(--text-color);user-select:none;-webkit-touch-callout:none;touch-action:manipulation;transition:background-color .2s}
+.btn-action.primary{flex:1.5;background:var(--accent-green-bright);color:#06210f}
+.btn-action.active{background:var(--deep);color:var(--accent-green-bright);box-shadow:inset 0 -2px 0 var(--accent-green-bright)}
+.btn-action.pending-confirm{flex:1 1 100%;white-space:pre-line;line-height:1.15;padding:6px 4px;background:var(--danger)!important;color:#fff!important;animation:pulseWarning 1s infinite alternate}
+@keyframes pulseWarning{to{opacity:.8}}
+.btn-action:active{opacity:.8}
+
+/* Ranking */
+.ranking-panel{background:var(--card-bg);border-radius:10px;overflow:hidden}
+.table-responsive{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;text-align:left}
+th,td{padding:5px 3px;white-space:nowrap;border-bottom:1px solid var(--line)}
+th{background:#141c20;color:var(--text-muted);font-weight:700;font-size:.85rem;letter-spacing:.3px}
+th.col-pos,td.col-pos{width:1%;padding-left:6px;padding-right:2px}
+th.col-jogador,td.col-jogador{width:100%;max-width:0;overflow:hidden;text-overflow:ellipsis;padding-left:2px}
+th:nth-child(n+3),td:nth-child(n+3){text-align:center;padding-left:5px;padding-right:5px}
+th:last-child,td:last-child{padding-right:6px}
+.btn-print-trigger{display:inline-block;margin-left:4px;padding:2px 6px;font-size:.95rem;line-height:1;cursor:pointer;opacity:.85;user-select:none}
+tr.player-row{cursor:pointer;user-select:none}
+tr.player-row td{font-size:1rem}
+tr.player-row td.player-name{font-size:1.1rem;font-weight:700;color:#fff}
+tr.player-row td:nth-child(7){font-size:1.1rem;font-weight:800}
+tr.player-row.selected-for-match{background:var(--deep)}
+tr.player-row.selected-for-match td:first-child{box-shadow:inset 3px 0 0 var(--accent-green-bright)}
+tr.player-row.abandoned-row{opacity:.5}
+tr.player-row.abandoned-row td.player-name{text-decoration:line-through;color:var(--text-muted)}
+.trend-up{color:var(--success);font-weight:700}
+.trend-down{color:var(--danger);font-weight:700}
+.trend-neutral{color:var(--text-muted)}
+.badge-pos{display:inline-block;min-width:28px;padding:2px 4px;border-radius:4px;background:rgba(255,235,59,.1);color:var(--yellow-badge);font-weight:900;font-size:.95rem;text-align:center;cursor:pointer}
+.badge-pos:active{background:rgba(255,235,59,.25)}
+.badge-pos.pos-1{background:#ffd54a;color:#3a2a00}
+.badge-pos.pos-2{background:#cfd8dc;color:#1c2a30}
+.badge-pos.pos-3{background:#d9925a;color:#2b1500}
+
+/* Histórico / Semana */
+.sub-panel{display:none;background:var(--card-bg);border-radius:10px;padding:6px 8px}
+.sub-panel-header{display:flex;justify-content:space-between;align-items:center;padding-bottom:4px}
+.sub-panel-title{font-size:1.05rem;font-weight:800;color:var(--accent-green-bright);display:flex;align-items:center;gap:4px}
+.btn-close-panel{background:transparent;border:0;color:var(--text-muted);font-size:1.6rem;line-height:1;padding:0 6px;cursor:pointer}
+.game-history-item{padding:5px 0;border-top:1px solid var(--line);font-size:1rem;display:flex;align-items:center;flex-wrap:wrap;gap:3px 6px}
+.hist-id{background:var(--bg-color);color:var(--accent-green-bright);font-weight:800;padding:0 5px;border-radius:4px;font-size:.85rem}
+.hist-data{color:var(--text-muted);font-weight:700;font-size:.9rem}
+.hist-vencedor,.hist-perdedor,.hist-placar{font-weight:700;color:#fff}
+.hist-pts-ganhos{color:var(--accent-green-bright);font-weight:800}
+.hist-pts-perdidos{color:var(--danger);font-weight:800}
+
+/* Modais */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:9999;align-items:center;justify-content:center;padding:10px}
+.modal-box{background:var(--card-bg);border-radius:12px;padding:14px;width:100%;max-width:420px;max-height:92dvh;overflow-y:auto;display:flex;flex-direction:column;gap:10px;box-shadow:0 8px 30px rgba(0,0,0,.5)}
+.modal-title{color:#fff;font-size:1.2rem;font-weight:800;margin:0}
+.modal-note{font-size:.95rem;color:var(--text-muted);margin:0}
+.modal-input{width:100%;padding:10px;background:var(--bg-color);border:0;border-radius:8px;color:#fff;font-size:1.1rem;outline:0}
+.modal-input:focus{box-shadow:0 0 0 2px var(--accent-green-bright)}
+.modal-buttons{display:flex;justify-content:flex-end;gap:6px}
+.btn-modal{padding:9px 16px;font-size:1rem;font-weight:700;border:0;border-radius:8px;cursor:pointer;color:#fff;background:var(--btn-bg)}
+.btn-modal.confirm{background:var(--accent-green-bright);color:#06210f}
+.btn-modal.danger{background:var(--danger)}
+.btn-modal.warn{background:var(--warning);color:#241a00}
+.btn-block{display:block;width:100%;text-align:center}
+.modal-sep{border:0;border-top:1px solid var(--line);margin:0}
+.manage-list{display:flex;flex-direction:column;gap:4px;max-height:50dvh;overflow-y:auto}
+.player-manage-item{display:flex;align-items:center;justify-content:space-between;background:var(--bg-color);padding:4px 4px 4px 10px;border-radius:8px;gap:6px}
+.player-manage-item input{background:transparent;border:0;color:#fff;font-size:1.05rem;font-weight:700;flex:1;min-width:0}
+.player-manage-actions{display:flex;gap:4px}
+.btn-sm{padding:6px 10px;font-size:.9rem;border-radius:6px;border:0;cursor:pointer;font-weight:700}
+.btn-status-active{background:var(--deep);color:var(--accent-green-bright)}
+.btn-status-abandoned{background:#3d2a2a;color:var(--danger)}
+
+/* Mini manual */
+.modal-box-manual{max-width:660px;padding:0;gap:0;overflow:hidden;background:#141c20}
+.manual-header{display:flex;justify-content:space-between;align-items:center;background:var(--card-bg);padding:8px 12px}
+.manual-header h3{margin:0;font-size:1.2rem;font-weight:800;color:var(--accent-green-bright)}
+.manual-container{flex:1;min-height:0;overflow-y:auto}
+.manual-body{padding:8px}
+.rules-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:6px;margin-bottom:6px}
+.rule-card{background:var(--card-bg);border-radius:8px;padding:8px 10px;box-shadow:inset 3px 0 0 var(--accent-green-bright)}
+.rule-card.warning-card{background:rgba(255,179,0,.07);box-shadow:inset 3px 0 0 var(--warning)}
+.rule-card-title{font-size:1.05rem;font-weight:800;color:#fff}
+.rule-card-body{font-size:.95rem;color:var(--text-muted);display:flex;flex-wrap:wrap;gap:4px 10px;align-items:center}
+.pts-badge{padding:1px 6px;border-radius:4px;font-weight:800;font-size:.9rem}
+.pts-badge.win{background:var(--deep);color:var(--accent-green-bright)}
+.pts-badge.loss{background:#3d2a2a;color:var(--danger)}
+.items-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:6px}
+.item-card{background:var(--card-bg);padding:8px 10px;border-radius:8px}
+.item-head{display:flex;align-items:center;gap:8px;margin-bottom:2px}
+.item-num{background:var(--deep);color:var(--accent-green-bright);font-weight:900;font-size:.85rem;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.item-title{font-size:1.05rem;font-weight:800;color:#fff}
+.manual-body ul{margin:0;padding-left:16px}
+.manual-body li{font-size:.95rem;color:var(--text-muted);line-height:1.25}
+.legend-box{margin-top:6px;background:var(--card-bg);padding:8px 10px;border-radius:8px}
+.legend-title{font-size:1rem;font-weight:800;color:var(--accent-green-bright);margin-bottom:4px}
+.legend-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:4px 8px}
+.legend-item{font-size:.9rem;color:var(--text-muted)}
+.legend-item strong{color:#fff}
+.manual-body footer{margin-top:8px;text-align:center;font-size:.85rem;color:var(--text-muted)}
+
+.hist-filter{width:100%;padding:6px 8px;margin:2px 0 4px;background:var(--bg-color);color:#fff;border:0;border-radius:6px;font-family:inherit;font-size:1rem}
+.btn-undo{margin-left:auto;background:transparent;border:0;color:var(--text-muted);font-size:1rem;line-height:1;padding:6px 10px;cursor:pointer}
+.btn-undo:active{color:var(--danger)}
+
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
 </head>
 <body>
 
@@ -651,6 +220,7 @@
                 </span>
                 <button class="btn-close-panel" onclick="fecharSubPainel()">&times;</button>
             </div>
+            <select id="filtroJogador" class="hist-filter" aria-label="Filtrar por jogador" onchange="aplicarFiltroJogador(this.value)"></select>
             <div id="historyListContainer"></div>
         </div>
 
@@ -660,15 +230,14 @@
                 <table>
                     <thead>
                         <tr>
-                            <th class="col-pos">POS</th>
-                            <th class="col-jogador">JOGADOR</th>
-                            <th class="btn-print-trigger" id="btnPrintShare" title="Gerar e Compartilhar Ranking">📷</th>
+                            <th class="col-pos">Pos</th>
+                            <th class="col-jogador">Jogador<span class="btn-print-trigger" id="btnPrintShare" title="Gerar e Compartilhar Ranking">📷</span></th>
                             <th>J</th>
                             <th>V</th>
                             <th>Gg</th>
                             <th>Gp</th>
-                            <th>PTS</th>
-                            <th>EVOL</th>
+                            <th>Pts</th>
+                            <th>Evol</th>
                         </tr>
                     </thead>
                     <tbody id="rankingTableBody"></tbody>
@@ -681,7 +250,7 @@
     <div class="modal-overlay" id="editPlayerPosModal">
         <div class="modal-box">
             <h3 class="modal-title">Editar Nome do Jogador</h3>
-            <input type="text" id="editPosPlayerName" class="modal-input" placeholder="Novo Nome..." autocomplete="off">
+            <input type="text" id="editPosPlayerName" class="modal-input" placeholder="Novo Nome..." maxlength="20" autocomplete="off">
             <div class="modal-buttons">
                 <button class="btn-modal cancel" onclick="fecharModalEditarJogadorPos()">Cancelar</button>
                 <button class="btn-modal confirm" onclick="salvarNomeJogadorPos()">Salvar</button>
@@ -693,7 +262,7 @@
     <div class="modal-overlay" id="addPlayerModal">
         <div class="modal-box">
             <h3 class="modal-title">Adicionar Novo Jogador</h3>
-            <input type="text" id="quickPlayerName" class="modal-input" placeholder="Nome do Jogador..." autocomplete="off">
+            <input type="text" id="quickPlayerName" class="modal-input" placeholder="Nome do Jogador..." maxlength="20" autocomplete="off">
             <div class="modal-buttons">
                 <button class="btn-modal cancel" onclick="fecharModalAdicionarJogador()">Cancelar</button>
                 <button class="btn-modal confirm" onclick="confirmarNovoJogadorRapido()">Adicionar</button>
@@ -705,9 +274,9 @@
     <div class="modal-overlay" id="managePlayersModal">
         <div class="modal-box">
             <h3 class="modal-title">Gerenciar & Editar Jogadores</h3>
-            <p style="font-size:0.85rem; color:var(--text-muted); margin:0;">Altere o nome, altere o status (Ativo/Abandonou) ou exclua um jogador.</p>
+            <p class="modal-note">Altere o nome, altere o status (Ativo/Abandonou) ou exclua um jogador.</p>
 
-            <div id="playersManageList" style="display:flex; flex-direction:column; gap:8px; max-height:280px; overflow-y:auto; margin-top:5px;"></div>
+            <div id="playersManageList" class="manage-list"></div>
 
             <div class="modal-buttons">
                 <button class="btn-modal confirm" onclick="fecharModalGerenciarJogadores()">Concluído</button>
@@ -719,18 +288,20 @@
     <div class="modal-overlay" id="dataBackupModal">
         <div class="modal-box">
             <h3 class="modal-title">Gestão de Dados & Backup</h3>
-            <p style="font-size:0.9rem; color:var(--text-muted); margin:0;">Exporte seus dados para um arquivo TXT de segurança, restaure um backup existente ou resete o app.</p>
+            <p class="modal-note">Exporte seus dados para um arquivo TXT, restaure um backup ou resete o app. Restaurar e resetar pedem senha.</p>
             
-            <button class="btn-modal confirm" style="width:100%; text-align:center;" onclick="exportarBackupTXT()">📥 Exportar Backup (TXT)</button>
+            <button class="btn-modal confirm btn-block" onclick="exportarBackupTXT()">📥 Exportar Backup (TXT)</button>
             
-            <label class="btn-modal cancel" style="width:100%; text-align:center; display:block; cursor:pointer;">
+            <label class="btn-modal cancel btn-block">
                 📤 Restaurar Backup (TXT)
                 <input type="file" id="fileRestoreInput" accept=".txt" style="display:none;" onchange="restaurarBackupTXT(event)">
             </label>
 
-            <hr style="border: 0; border-top: 1px solid #2a363d; margin: 5px 0;">
+            <hr class="modal-sep">
 
-            <button class="btn-modal danger" style="width:100%;" onclick="solicitarLimpezaGeral()">🗑 Resetar/Limpar Tudo</button>
+            <button class="btn-modal warn btn-block" onclick="solicitarResetJogosEPontos()">♻ Resetar Jogos e Pontos (manter jogadores)</button>
+
+            <button class="btn-modal danger btn-block" onclick="solicitarLimpezaGeral()">🗑 Resetar/Limpar Tudo</button>
 
             <div class="modal-buttons">
                 <button class="btn-modal cancel" onclick="fecharModalDataBackup()">Fechar</button>
@@ -775,7 +346,7 @@
                                 <span>⚠️ REGRA SEMANAL</span>
                             </div>
                             <div class="rule-card-body" style="color: #ffffff;">
-                                É proibido jogar mais de 1 vez<br>com o mesmo adversário na semana.
+                                É proibido jogar mais de 1 vez com o mesmo adversário na semana.
                             </div>
                         </div>
                     </div>
@@ -789,7 +360,7 @@
                             </div>
                             <ul>
                                 <li>Clique rápido: Cadastra novo jogador.</li>
-                                <li>Clique longo: Gerencia, edita e exclui<br>jogadores existentes.</li>
+                                <li>Clique longo: Gerencia, edita e exclui jogadores existentes.</li>
                             </ul>
                         </div>
 
@@ -800,7 +371,7 @@
                             </div>
                             <ul>
                                 <li>Clique no nome: Seleciona para a partida.</li>
-                                <li>Sistema verifica se a dupla já jogou<br>na semana atual.</li>
+                                <li>Sistema verifica se a dupla já jogou na semana atual.</li>
                             </ul>
                         </div>
 
@@ -810,7 +381,7 @@
                                 <span class="item-title">Posição do Jogador</span>
                             </div>
                             <ul>
-                                <li>Clique no número amarelo da posição<br>para editar o nome direto na tabela.</li>
+                                <li>Clique no número amarelo da posição para editar o nome direto na tabela.</li>
                             </ul>
                         </div>
 
@@ -821,7 +392,7 @@
                             </div>
                             <ul>
                                 <li>Ordenação automática por Pontos.</li>
-                                <li>Ícone de câmera exposto para<br>compartilhar imagem do Ranking.</li>
+                                <li>Ícone de câmera exposto para compartilhar imagem do Ranking.</li>
                             </ul>
                         </div>
 
@@ -832,7 +403,8 @@
                             </div>
                             <ul>
                                 <li>Clique rápido: Exibe/oculta o histórico.</li>
-                                <li>Clique longo: Abre o painel de Backup,<br>Exportação e Restauração TXT.</li>
+                                <li>Use o seletor para filtrar por jogador e o ✕ para desfazer um jogo (pede senha).</li>
+                                <li>Clique longo: Abre o painel de Backup, Exportação e Restauração TXT.</li>
                             </ul>
                         </div>
 
@@ -842,7 +414,7 @@
                                 <span class="item-title">Botão Semana</span>
                             </div>
                             <ul>
-                                <li>Clique rápido: Mostra jogos da semana.</li>
+                                <li>Clique rápido: Mostra jogos da semana (encerra sozinha toda segunda-feira).</li>
                                 <li>Clique longo: Abre este Mini Manual.</li>
                             </ul>
                         </div>
@@ -894,6 +466,45 @@
         let jogadores = JSON.parse(localStorage.getItem('zs_jogadores')) || [];
         let historicoJogos = JSON.parse(localStorage.getItem('zs_historico')) || [];
         let contadorJogos = parseInt(localStorage.getItem('zs_contador')) || (historicoJogos.length + 1);
+        let semanaRef = localStorage.getItem('zs_semana_ref');
+        let filtroJogadorId = '';
+        const MAX_NOME = 20;
+
+        function esc(texto) {
+            return String(texto).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+        }
+
+        // Segunda-feira da semana de "data" no formato AAAA-MM-DD
+        function segundaDaSemana(data = new Date()) {
+            const d = new Date(data.getFullYear(), data.getMonth(), data.getDate());
+            d.setDate(d.getDate() - ((d.getDay() + 6) % 7));
+            return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+        }
+
+        // Encerra a semana automaticamente quando começa uma nova segunda-feira. Retorna true se virou.
+        function verificarViradaSemana() {
+            const atual = segundaDaSemana();
+            if (!semanaRef) {
+                semanaRef = atual;
+                salvarEstadoLocal();
+                return false;
+            }
+            if (semanaRef < atual) {
+                historicoJogos.forEach(j => { j.isSemanaAtual = false; });
+                jogadores.forEach(j => { j.variacaoSemana = 0; });
+                semanaRef = atual;
+                salvarEstadoLocal();
+                return true;
+            }
+            return false;
+        }
+
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden && document.body.classList.contains('app-active') && verificarViradaSemana()) {
+                renderizarTabela();
+                if (abaAtiva) renderizarSubPainel(abaAtiva);
+            }
+        });
 
         let jogadoresSelecionados = [];
         let abaAtiva = null;
@@ -914,6 +525,7 @@
             localStorage.setItem('zs_jogadores', JSON.stringify(jogadores));
             localStorage.setItem('zs_historico', JSON.stringify(historicoJogos));
             localStorage.setItem('zs_contador', contadorJogos.toString());
+            if (semanaRef) localStorage.setItem('zs_semana_ref', semanaRef);
         }
 
         function formatarIdJogo(numero) { return `#${String(numero).padStart(2, '0')}`; }
@@ -963,6 +575,7 @@
             document.getElementById('dashboardScreen').style.display = 'flex';
             document.body.classList.add('app-active');
 
+            verificarViradaSemana();
             renderizarTabela();
             configurarCompartilhamentos();
             configurarEventosHist();
@@ -975,9 +588,14 @@
                 if (a.status === 'abandonou' && b.status !== 'abandonou') return 1;
                 if (a.status !== 'abandonou' && b.status === 'abandonou') return -1;
 
-                if (b.pontosTotais !== a.pontosTotais) {
-                    return b.pontosTotais - a.pontosTotais;
-                }
+                if (b.pontosTotais !== a.pontosTotais) return b.pontosTotais - a.pontosTotais;
+
+                const saldoA = a.ptsGanhos - a.ptsPerdidos;
+                const saldoB = b.ptsGanhos - b.ptsPerdidos;
+                if (saldoB !== saldoA) return saldoB - saldoA;
+
+                if (b.vitorias !== a.vitorias) return b.vitorias - a.vitorias;
+
                 return a.nome.localeCompare(b.nome, 'pt-BR', { sensitivity: 'base' });
             });
         }
@@ -989,7 +607,7 @@
             tbody.innerHTML = '';
 
             if (jogadores.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding: 20px; color: var(--text-muted);">Nenhum jogador cadastrado. Clique no botão 'Add' para começar.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding: 14px; color: var(--text-muted);">Nenhum jogador cadastrado. Clique no botão 'Add' para começar.</td></tr>`;
                 return;
             }
 
@@ -1022,12 +640,13 @@
                     indicadorTexto = `▼${jogador.variacaoSemana}`;
                 }
 
-                const posExibicao = jogador.status === 'abandonou' ? '-' : `${posicaoAtiva++}º`;
+                const posNum = jogador.status === 'abandonou' ? null : posicaoAtiva++;
+                const posExibicao = posNum ? `${posNum}º` : '-';
+                const posClass = (posNum && posNum <= 3 && jogador.jogos > 0) ? ` pos-${posNum}` : '';
 
                 tr.innerHTML = `
-                    <td class="col-pos"><span class="badge-pos" onclick="abrirModalEditarJogadorPos(${jogador.id}, event)" title="Editar nome do jogador">${posExibicao}</span></td>
-                    <td class="col-jogador player-name">${jogador.nome} ${jogador.status === 'abandonou' ? '(Aba.)' : ''}</td>
-                    <td></td>
+                    <td class="col-pos"><span class="badge-pos${posClass}" onclick="abrirModalEditarJogadorPos(${jogador.id}, event)" title="Editar nome do jogador">${posExibicao}</span></td>
+                    <td class="col-jogador player-name">${esc(jogador.nome)} ${jogador.status === 'abandonou' ? '(Aba.)' : ''}</td>
                     <td>${jogador.jogos}</td>
                     <td><strong>${jogador.vitorias}</strong></td>
                     <td>${jogador.ptsGanhos}</td>
@@ -1063,7 +682,7 @@
         function salvarNomeJogadorPos() {
             garantirFullscreen();
             const input = document.getElementById('editPosPlayerName');
-            const novoNome = input.value.trim();
+            const novoNome = input.value.trim().slice(0, MAX_NOME);
 
             if (!novoNome) return;
 
@@ -1074,56 +693,65 @@
 
             const jogador = jogadores.find(j => j.id === jogadorEmEdicaoId);
             if (jogador) {
-                jogador.nome = novoNome;
-                
-                historicoJogos.forEach(j => {
-                    if (j.vencedorId === jogador.id) j.vencedor = novoNome;
-                    if (j.perdedorId === jogador.id) j.perdedor = novoNome;
-                });
-
-                salvarEstadoLocal();
+                aplicarNovoNome(jogador, novoNome);
                 renderizarTabela();
-                atualizarPainelJogo();
-                if (abaAtiva) renderizarSubPainel(abaAtiva);
-                
                 fecharModalEditarJogadorPos();
                 dispararVibracao();
                 falarAviso(`Nome alterado para ${novoNome}`);
             }
         }
 
-        // CONFIGURAÇÃO DO BOTÃO ADD
-        function configurarEventosAdd() {
-            const btnAdd = document.getElementById('btnAdd');
+        // Renomeia o jogador e propaga o novo nome para histórico, slots e painéis abertos
+        function aplicarNovoNome(jogador, novoNome) {
+            jogador.nome = novoNome;
+            historicoJogos.forEach(j => {
+                if (j.vencedorId === jogador.id) j.vencedor = novoNome;
+                if (j.perdedorId === jogador.id) j.perdedor = novoNome;
+            });
+            salvarEstadoLocal();
+            atualizarPainelJogo();
+            if (abaAtiva) renderizarSubPainel(abaAtiva);
+        }
 
-            const iniciarPress = () => {
-                isLongPressAdd = false;
-                addTimer = setTimeout(() => {
-                    isLongPressAdd = true;
+        // Botão com clique rápido e toque longo (800 ms)
+        function configurarPressLongo(id, aoLongo, aoClique) {
+            const btn = document.getElementById(id);
+            let timer = null;
+            let longo = false;
+            let fimToque = 0;
+
+            const iniciar = () => {
+                longo = false;
+                clearTimeout(timer);
+                timer = setTimeout(() => {
+                    longo = true;
                     dispararVibracao();
-                    abrirModalGerenciarJogadores();
+                    aoLongo();
                 }, 800);
             };
+            const cancelar = () => clearTimeout(timer);
 
-            const cancelarPress = () => {
-                if (addTimer) clearTimeout(addTimer);
-            };
+            btn.addEventListener('mousedown', () => {
+                if (Date.now() - fimToque < 700) return; // ignora mouse emulado após toque
+                iniciar();
+            });
+            btn.addEventListener('mouseup', cancelar);
+            btn.addEventListener('mouseleave', cancelar);
+            btn.addEventListener('touchstart', iniciar, { passive: true });
+            btn.addEventListener('touchend', () => { fimToque = Date.now(); cancelar(); });
+            btn.addEventListener('touchcancel', cancelar);
+            btn.addEventListener('contextmenu', e => e.preventDefault());
+            btn.addEventListener('click', () => {
+                if (longo) { longo = false; return; }
+                aoClique();
+            });
+        }
 
-            btnAdd.addEventListener('mousedown', iniciarPress);
-            btnAdd.addEventListener('mouseup', cancelarPress);
-            btnAdd.addEventListener('mouseleave', cancelarPress);
-
-            btnAdd.addEventListener('touchstart', (e) => {
-                iniciarPress();
-            }, { passive: true });
-
-            btnAdd.addEventListener('touchend', cancelarPress);
-
-            btnAdd.addEventListener('click', () => {
-                if (!isLongPressAdd) {
-                    dispararVibracao();
-                    abrirModalAdicionarJogador();
-                }
+        // CONFIGURAÇÃO DO BOTÃO ADD
+        function configurarEventosAdd() {
+            configurarPressLongo('btnAdd', abrirModalGerenciarJogadores, () => {
+                dispararVibracao();
+                abrirModalAdicionarJogador();
             });
         }
 
@@ -1141,7 +769,7 @@
         function confirmarNovoJogadorRapido() {
             garantirFullscreen();
             const input = document.getElementById('quickPlayerName');
-            const nome = input.value.trim();
+            const nome = input.value.trim().slice(0, MAX_NOME);
 
             if (nome !== '') {
                 if (jogadorExiste(nome)) {
@@ -1196,7 +824,7 @@
                 const isAbandonou = jogador.status === 'abandonou';
 
                 div.innerHTML = `
-                    <input type="text" value="${jogador.nome}" onchange="atualizarNomeJogador(${jogador.id}, this)">
+                    <input type="text" value="${esc(jogador.nome)}" maxlength="20" onchange="atualizarNomeJogador(${jogador.id}, this)">
                     <div class="player-manage-actions">
                         <button class="btn-sm ${isAbandonou ? 'btn-status-abandoned' : 'btn-status-active'}" onclick="alternarStatusJogador(${jogador.id})">
                             ${isAbandonou ? 'Abandonou' : 'Ativo'}
@@ -1209,24 +837,24 @@
         }
 
         function atualizarNomeJogador(id, inputElement) {
-            const novoNome = inputElement.value.trim();
             const jogador = jogadores.find(j => j.id === id);
+            if (!jogador) return;
 
-            if (jogador) {
-                if (novoNome === '') {
-                    inputElement.value = jogador.nome;
-                    return;
-                }
+            const novoNome = inputElement.value.trim().slice(0, MAX_NOME);
 
-                if (jogadorExiste(novoNome, id)) {
-                    falarAviso("Jogador já cadastrado");
-                    inputElement.value = jogador.nome;
-                    return;
-                }
-
-                jogador.nome = novoNome;
-                salvarEstadoLocal();
+            if (novoNome === '' || novoNome === jogador.nome) {
+                inputElement.value = jogador.nome;
+                return;
             }
+
+            if (jogadorExiste(novoNome, id)) {
+                falarAviso("Jogador já cadastrado");
+                inputElement.value = jogador.nome;
+                return;
+            }
+
+            aplicarNovoNome(jogador, novoNome);
+            inputElement.value = novoNome;
         }
 
         function alternarStatusJogador(id) {
@@ -1239,6 +867,14 @@
         }
 
         function excluirJogador(id) {
+            const temJogos = historicoJogos.some(j => j.vencedorId === id || j.perdedorId === id);
+            const jogador = jogadores.find(j => j.id === id);
+
+            if (temJogos || (jogador && jogador.jogos > 0)) {
+                alert('Este jogador possui jogos registrados e não pode ser excluído.\nMarque-o como "Abandonou" para tirá-lo do ranking.');
+                return;
+            }
+
             if (confirm("Deseja realmente excluir este jogador?")) {
                 jogadores = jogadores.filter(j => j.id !== id);
                 jogadoresSelecionados = jogadoresSelecionados.filter(j => j.id !== id);
@@ -1250,32 +886,7 @@
 
         // CONFIGURAÇÃO DO BOTÃO HIST
         function configurarEventosHist() {
-            const btnHist = document.getElementById('btnHist');
-
-            const iniciarPress = () => {
-                histTimer = setTimeout(() => {
-                    dispararVibracao();
-                    abrirModalDataBackup();
-                }, 800);
-            };
-
-            const cancelarPress = () => {
-                if (histTimer) clearTimeout(histTimer);
-            };
-
-            btnHist.addEventListener('mousedown', iniciarPress);
-            btnHist.addEventListener('mouseup', cancelarPress);
-            btnHist.addEventListener('mouseleave', cancelarPress);
-
-            btnHist.addEventListener('touchstart', (e) => {
-                iniciarPress();
-            }, { passive: true });
-
-            btnHist.addEventListener('touchend', cancelarPress);
-
-            btnHist.addEventListener('click', () => {
-                toggleSubPainel('hist');
-            });
+            configurarPressLongo('btnHist', abrirModalDataBackup, () => toggleSubPainel('hist'));
         }
 
         function abrirModalDataBackup() {
@@ -1289,36 +900,7 @@
 
         // CONFIGURAÇÃO DO BOTÃO SEMANA (CLIQUE RÁPIDO VS CLIQUE LONGO)
         function configurarEventosSemana() {
-            const btnSemana = document.getElementById('btnSemana');
-
-            const iniciarPress = () => {
-                isLongPressSemana = false;
-                semanaTimer = setTimeout(() => {
-                    isLongPressSemana = true;
-                    dispararVibracao();
-                    abrirModalMiniManual();
-                }, 800);
-            };
-
-            const cancelarPress = () => {
-                if (semanaTimer) clearTimeout(semanaTimer);
-            };
-
-            btnSemana.addEventListener('mousedown', iniciarPress);
-            btnSemana.addEventListener('mouseup', cancelarPress);
-            btnSemana.addEventListener('mouseleave', cancelarPress);
-
-            btnSemana.addEventListener('touchstart', (e) => {
-                iniciarPress();
-            }, { passive: true });
-
-            btnSemana.addEventListener('touchend', cancelarPress);
-
-            btnSemana.addEventListener('click', () => {
-                if (!isLongPressSemana) {
-                    toggleSubPainel('semana');
-                }
-            });
+            configurarPressLongo('btnSemana', abrirModalMiniManual, () => toggleSubPainel('semana'));
         }
 
         function abrirModalMiniManual() {
@@ -1338,7 +920,8 @@
                 dataExportacao: new Date().toISOString(),
                 jogadores: jogadores,
                 historicoJogos: historicoJogos,
-                contadorJogos: contadorJogos
+                contadorJogos: contadorJogos,
+                semanaRef: semanaRef
             };
 
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(payload, null, 2));
@@ -1350,26 +933,57 @@
             downloadAnchor.remove();
         }
 
+        function normalizarJogador(j) {
+            const n = v => Number(v) || 0;
+            return {
+                id: n(j.id), nome: String(j.nome ?? ''), jogos: n(j.jogos), vitorias: n(j.vitorias),
+                ptsGanhos: n(j.ptsGanhos), ptsPerdidos: n(j.ptsPerdidos), pontosTotais: n(j.pontosTotais),
+                variacaoSemana: n(j.variacaoSemana), status: j.status === 'abandonou' ? 'abandonou' : 'ativo'
+            };
+        }
+
+        function normalizarJogo(j) {
+            const n = v => Number(v) || 0;
+            return {
+                idJogo: String(j.idJogo ?? ''), data: String(j.data ?? ''),
+                vencedor: String(j.vencedor ?? ''), vencedorId: n(j.vencedorId), ptsGanhos: n(j.ptsGanhos),
+                perdedor: String(j.perdedor ?? ''), perdedorId: n(j.perdedorId), ptsPerdidos: n(j.ptsPerdidos),
+                placar: String(j.placar ?? ''), isSemanaAtual: !!j.isSemanaAtual
+            };
+        }
+
         function restaurarBackupTXT(event) {
             const file = event.target.files[0];
+            event.target.value = '';
             if (!file) return;
+            if (!pedirSenha("Digite a senha para restaurar o backup:")) return;
 
             const reader = new FileReader();
             reader.onload = function(e) {
                 try {
                     const data = JSON.parse(e.target.result);
-                    if (data && data.jogadores && data.historicoJogos) {
-                        jogadores = data.jogadores;
-                        historicoJogos = data.historicoJogos;
-                        contadorJogos = data.contadorJogos || (historicoJogos.length + 1);
-
-                        salvarEstadoLocal();
-                        renderizarTabela();
-                        fecharModalDataBackup();
-                        alert("Dados restaurados com sucesso!");
-                    } else {
+                    if (!(data && Array.isArray(data.jogadores) && Array.isArray(data.historicoJogos))) {
                         alert("Formato de arquivo inválido!");
+                        return;
                     }
+
+                    const aviso = `Substituir os dados atuais (${jogadores.length} jogadores, ${historicoJogos.length} jogos) pelo backup (${data.jogadores.length} jogadores, ${data.historicoJogos.length} jogos)?\n\nEsta ação não pode ser desfeita.`;
+                    if (!confirm(aviso)) return;
+
+                    jogadores = data.jogadores.map(normalizarJogador);
+                    historicoJogos = data.historicoJogos.map(normalizarJogo);
+                    contadorJogos = parseInt(data.contadorJogos, 10) || (historicoJogos.length + 1);
+                    semanaRef = /^\d{4}-\d{2}-\d{2}$/.test(data.semanaRef || '') ? data.semanaRef : segundaDaSemana();
+                    jogadoresSelecionados = [];
+
+                    cancelarEstadoConfirmacao();
+                    verificarViradaSemana();
+                    salvarEstadoLocal();
+                    renderizarTabela();
+                    atualizarPainelJogo();
+                    if (abaAtiva) renderizarSubPainel(abaAtiva);
+                    fecharModalDataBackup();
+                    alert("Dados restaurados com sucesso!");
                 } catch (err) {
                     alert("Erro ao ler o arquivo de backup.");
                 }
@@ -1377,13 +991,50 @@
             reader.readAsText(file);
         }
 
+        const SENHA_ADMIN = "JaPa2026";
+
+        function pedirSenha(mensagem) {
+            const senha = prompt(mensagem);
+            if (senha === null) return false;
+            if (senha === SENHA_ADMIN) return true;
+            alert("Senha incorreta!");
+            return false;
+        }
+
+        function solicitarResetJogosEPontos() {
+            if (!pedirSenha("Digite a senha para apagar TODOS os jogos e pontos (os jogadores serão mantidos):")) return;
+
+            jogadores.forEach(j => {
+                j.jogos = 0;
+                j.vitorias = 0;
+                j.ptsGanhos = 0;
+                j.ptsPerdidos = 0;
+                j.pontosTotais = 0;
+                j.variacaoSemana = 0;
+            });
+            historicoJogos = [];
+            contadorJogos = 1;
+            semanaRef = segundaDaSemana();
+            jogadoresSelecionados = [];
+            document.getElementById('score1').value = '';
+            document.getElementById('score2').value = '';
+
+            cancelarEstadoConfirmacao();
+            salvarEstadoLocal();
+            renderizarTabela();
+            atualizarPainelJogo();
+            if (abaAtiva) renderizarSubPainel(abaAtiva);
+            fecharModalDataBackup();
+            alert("Jogos e pontos resetados. Os jogadores foram mantidos.");
+        }
+
         function solicitarLimpezaGeral() {
-            const senha = prompt("Digite a senha para resetar TODOS os dados do app:");
-            if (senha === "JaPa2026") {
+            if (pedirSenha("Digite a senha para resetar TODOS os dados do app:")) {
                 localStorage.clear();
                 jogadores = [];
                 historicoJogos = [];
                 contadorJogos = 1;
+                semanaRef = segundaDaSemana();
                 jogadoresSelecionados = [];
 
                 salvarEstadoLocal();
@@ -1391,8 +1042,6 @@
                 atualizarPainelJogo();
                 fecharModalDataBackup();
                 alert("Todos os dados foram resetados!");
-            } else if (senha !== null) {
-                alert("Senha incorreta!");
             }
         }
 
@@ -1422,7 +1071,11 @@
 
         async function compartilharImagemElemento(elemento, nomeArquivo, mensagemTexto) {
             try {
-                const canvas = await html2canvas(elemento, { backgroundColor: '#1e272c', scale: 2 });
+                const canvas = await html2canvas(elemento, {
+                    backgroundColor: '#1a2328',
+                    scale: 2,
+                    ignoreElements: el => el.classList && ['btn-print-trigger', 'btn-close-panel', 'btn-undo', 'hist-filter'].some(c => el.classList.contains(c))
+                });
                 canvas.toBlob(async (blob) => {
                     if (!blob) return;
                     const arquivo = new File([blob], nomeArquivo, { type: 'image/png' });
@@ -1474,6 +1127,7 @@
         }
 
         function selecionarJogador(jogador) {
+            garantirFullscreen();
             if (jogador.status === 'abandonou') {
                 falarAviso("Jogador com status Abandonou");
                 return;
@@ -1483,12 +1137,14 @@
             cancelarEstadoConfirmacao();
 
             const index = jogadoresSelecionados.findIndex(p => p.id === jogador.id);
+            let adicionado = false;
 
             if (index > -1) {
                 jogadoresSelecionados.splice(index, 1);
             } else {
                 if (jogadoresSelecionados.length === 0) {
                     jogadoresSelecionados.push(jogador);
+                    adicionado = true;
                 } else {
                     const primeiroJogador = jogadoresSelecionados[0];
                     if (jaJogaramNaSemana(primeiroJogador.id, jogador.id)) {
@@ -1501,11 +1157,13 @@
                     } else {
                         jogadoresSelecionados[1] = jogador;
                     }
+                    adicionado = true;
                 }
             }
 
             atualizarPainelJogo();
             renderizarTabela();
+            if (adicionado) falarAviso(jogador.nome);
         }
 
         function limparSlot(slotIndex) {
@@ -1630,14 +1288,17 @@
             aguardandoSegundaConfirmacao = true;
             tempoRestante = 6;
 
+            const previa = `${nomeVencedor} +${ptsVencedor} × ${nomePerdedor} ${ptsPerdedorVal} (${placarStr})`;
+            const textoBotao = () => `${previa}\nSalvar (${tempoRestante}s)`;
+
             const btnConfirmar = document.getElementById('btnConfirmar');
             btnConfirmar.classList.add('pending-confirm');
-            btnConfirmar.textContent = `Salvar (${tempoRestante}s)`;
+            btnConfirmar.textContent = textoBotao();
 
             intervalContagem = setInterval(() => {
                 tempoRestante--;
                 if (tempoRestante > 0) {
-                    btnConfirmar.textContent = `Salvar (${tempoRestante}s)`;
+                    btnConfirmar.textContent = textoBotao();
                 }
             }, 1000);
 
@@ -1755,15 +1416,44 @@
             document.getElementById('btnHist').classList.remove('active');
             document.getElementById('btnSemana').classList.remove('active');
             abaAtiva = null;
+            filtroJogadorId = '';
+        }
+
+        function aplicarFiltroJogador(valor) {
+            filtroJogadorId = valor;
+            if (abaAtiva) renderizarSubPainel(abaAtiva);
         }
 
         function renderizarSubPainel(tipo) {
             const container = document.getElementById('historyListContainer');
+            const seletor = document.getElementById('filtroJogador');
             container.innerHTML = '';
 
-            const lista = tipo === 'semana' 
-                ? historicoJogos.filter(j => j.isSemanaAtual)
-                : historicoJogos;
+            if (filtroJogadorId && !jogadores.some(j => String(j.id) === filtroJogadorId)) filtroJogadorId = '';
+
+            seletor.innerHTML = '';
+            const optTodos = document.createElement('option');
+            optTodos.value = '';
+            optTodos.textContent = 'Todos os jogadores';
+            seletor.appendChild(optTodos);
+            [...jogadores]
+                .sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR', { sensitivity: 'base' }))
+                .forEach(j => {
+                    const opt = document.createElement('option');
+                    opt.value = String(j.id);
+                    opt.textContent = j.nome;
+                    seletor.appendChild(opt);
+                });
+            seletor.value = filtroJogadorId;
+
+            const base = tipo === 'semana' ? historicoJogos.filter(j => j.isSemanaAtual) : historicoJogos;
+            const lista = filtroJogadorId
+                ? base.filter(j => String(j.vencedorId) === filtroJogadorId || String(j.perdedorId) === filtroJogadorId)
+                : base;
+
+            const jogadorFiltrado = jogadores.find(j => String(j.id) === filtroJogadorId);
+            const tituloBase = tipo === 'semana' ? 'Jogos da Semana' : 'Histórico de Jogos (Geral)';
+            document.getElementById('subPanelTitle').textContent = jogadorFiltrado ? `${tituloBase} - ${jogadorFiltrado.nome}` : tituloBase;
 
             if (lista.length === 0) {
                 container.innerHTML = `<div style="text-align:center; color: var(--text-muted); padding: 10px;">Nenhum jogo registrado.</div>`;
@@ -1773,22 +1463,69 @@
             lista.forEach(j => {
                 const itemDiv = document.createElement('div');
                 itemDiv.className = 'game-history-item';
-                
+
                 const strGanhos = j.ptsGanhos > 0 ? `+${j.ptsGanhos}` : `${j.ptsGanhos}`;
                 const strPerdidos = j.ptsPerdidos > 0 ? `-${j.ptsPerdidos}` : `${j.ptsPerdidos}`;
 
                 itemDiv.innerHTML = `
-                    <span class="hist-id">${j.idJogo}</span>
-                    <span class="hist-data">${j.data}</span>
-                    <span class="hist-vencedor">${j.vencedor}</span>
-                    <span class="hist-pts-ganhos">${strGanhos}</span>
+                    <span class="hist-id">${esc(j.idJogo)}</span>
+                    <span class="hist-data">${esc(j.data)}</span>
+                    <span class="hist-vencedor">${esc(j.vencedor)}</span>
+                    <span class="hist-pts-ganhos">${esc(strGanhos)}</span>
                     <span style="color:var(--text-muted);">x</span>
-                    <span class="hist-perdedor">${j.perdedor}</span>
-                    <span class="hist-pts-perdidos">${strPerdidos}</span>
-                    <span class="hist-placar">(${j.placar})</span>
+                    <span class="hist-perdedor">${esc(j.perdedor)}</span>
+                    <span class="hist-pts-perdidos">${esc(strPerdidos)}</span>
+                    <span class="hist-placar">(${esc(j.placar)})</span>
                 `;
+
+                const btnDesfazer = document.createElement('button');
+                btnDesfazer.type = 'button';
+                btnDesfazer.className = 'btn-undo';
+                btnDesfazer.textContent = '✕';
+                btnDesfazer.title = 'Desfazer jogo';
+                btnDesfazer.setAttribute('aria-label', `Desfazer jogo ${j.idJogo}`);
+                btnDesfazer.onclick = () => desfazerJogo(j.idJogo);
+                itemDiv.appendChild(btnDesfazer);
+
                 container.appendChild(itemDiv);
             });
+        }
+
+        // Desfaz um jogo: devolve pontos e estatísticas aos dois jogadores (pede senha)
+        function desfazerJogo(idJogo) {
+            const idx = historicoJogos.findIndex(j => j.idJogo === idJogo);
+            if (idx < 0) return;
+            const jogo = historicoJogos[idx];
+
+            if (!pedirSenha(`Digite a senha para desfazer o jogo ${jogo.idJogo} (${jogo.vencedor} x ${jogo.perdedor}, ${jogo.placar}):`)) return;
+
+            const venc = jogadores.find(p => p.id === jogo.vencedorId);
+            const perd = jogadores.find(p => p.id === jogo.perdedorId);
+            const [gamesVenc, gamesPerd] = String(jogo.placar).split('x').map(Number);
+
+            if (venc) {
+                venc.jogos = Math.max(0, venc.jogos - 1);
+                venc.vitorias = Math.max(0, venc.vitorias - 1);
+                venc.ptsGanhos -= gamesVenc || 0;
+                venc.ptsPerdidos -= gamesPerd || 0;
+                venc.pontosTotais -= jogo.ptsGanhos;
+                if (jogo.isSemanaAtual) venc.variacaoSemana -= jogo.ptsGanhos;
+            }
+            if (perd) {
+                perd.jogos = Math.max(0, perd.jogos - 1);
+                perd.ptsGanhos -= gamesPerd || 0;
+                perd.ptsPerdidos -= gamesVenc || 0;
+                perd.pontosTotais -= jogo.ptsPerdidos;
+                if (jogo.isSemanaAtual) perd.variacaoSemana -= jogo.ptsPerdidos;
+            }
+
+            historicoJogos.splice(idx, 1);
+            salvarEstadoLocal();
+            cancelarEstadoConfirmacao();
+            renderizarTabela();
+            if (abaAtiva) renderizarSubPainel(abaAtiva);
+            dispararVibracao();
+            falarAviso("Jogo desfeito");
         }
 
         // SERVICE WORKER PARA PWA
