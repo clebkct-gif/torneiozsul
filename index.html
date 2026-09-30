@@ -243,8 +243,7 @@
         }
 
         .btn-action.primary { background-color: #11381e; color: #ffffff; }
-        
-        /* ESTILO DO BOTÃO QUANDO AGUARDANDO A SEGUNDA CONFIRMAÇÃO */
+
         .btn-action.pending-confirm {
             background-color: var(--danger) !important;
             color: #ffffff !important;
@@ -305,6 +304,13 @@
             font-size: 0.9rem;
             color: var(--yellow-badge);
             border: 1px solid rgba(255, 235, 59, 0.3);
+            cursor: pointer;
+            transition: transform 0.1s, background-color 0.2s;
+        }
+
+        .badge-pos:hover {
+            transform: scale(1.1);
+            background-color: #1a232a;
         }
 
         .sub-panel {
@@ -351,11 +357,11 @@
             position: fixed;
             top: 0; left: 0;
             width: 100vw; height: 100vh;
-            background-color: rgba(0, 0, 0, 0.8);
+            background-color: rgba(0, 0, 0, 0.85);
             z-index: 9999;
             align-items: center;
             justify-content: center;
-            padding: 15px;
+            padding: 12px;
         }
 
         .modal-box {
@@ -427,6 +433,179 @@
         .btn-sm { padding: 4px 8px; font-size: 0.8rem; border-radius: 4px; border: none; cursor: pointer; font-weight: bold; }
         .btn-status-active { background-color: #11381e; color: var(--accent-green-bright); }
         .btn-status-abandoned { background-color: #3d2a2a; color: var(--danger); }
+
+        /* ================================================= */
+        /* DESIGN PREMIUM DO MINI MANUAL INTEGRADO */
+        /* ================================================= */
+        .modal-box-manual {
+            max-width: 650px;
+            padding: 0;
+            overflow: hidden;
+            background: #182024;
+            color: #e0e6ed;
+            border: 1px solid #2a363d;
+            border-top: 4px solid var(--accent-green-bright);
+        }
+
+        .manual-container {
+            width: 100%;
+            max-height: 85vh;
+            overflow-y: auto;
+            background: #12181b;
+            font-family: 'Rajdhani', sans-serif;
+        }
+
+        .manual-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #1e272c;
+            color: var(--accent-green-bright);
+            padding: 12px 16px;
+            border-bottom: 2px solid #2a363d;
+        }
+
+        .manual-header h3 {
+            margin: 0;
+            font-size: 1.25rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+        }
+
+        .manual-body { padding: 12px; }
+
+        .manual-body .rules-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .manual-body .rule-card {
+            background: #1e272c;
+            border-radius: 8px;
+            padding: 10px 12px;
+            border-left: 4px solid var(--accent-green-bright);
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .manual-body .rule-card.warning-card {
+            border-left-color: var(--warning);
+            background: rgba(255, 179, 0, 0.05);
+        }
+
+        .manual-body .rule-card-title {
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .manual-body .rule-card-body {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .manual-body .pts-badge {
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 800;
+            font-size: 0.9rem;
+        }
+
+        .manual-body .pts-badge.win { background-color: #11381e; color: var(--accent-green-bright); border: 1px solid rgba(0, 230, 118, 0.3); }
+        .manual-body .pts-badge.loss { background-color: #3d2a2a; color: var(--danger); border: 1px solid rgba(255, 82, 82, 0.3); }
+
+        .manual-body .items-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .manual-body .item-card {
+            background: #1e272c;
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 1px solid #2a363d;
+        }
+
+        .manual-body .item-head {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+
+        .manual-body .item-num {
+            background: var(--btn-bg);
+            color: var(--accent-green-bright);
+            font-weight: 900;
+            font-size: 0.9rem;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .manual-body .item-title {
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: #ffffff;
+        }
+
+        .manual-body ul { margin: 0; padding-left: 18px; }
+        .manual-body li { font-size: 0.95rem; color: var(--text-muted); margin-bottom: 2px; line-height: 1.3; }
+
+        .manual-body .legend-box {
+            margin-top: 12px;
+            background: #1e272c;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #2a363d;
+        }
+
+        .manual-body .legend-title {
+            font-size: 1rem;
+            font-weight: 800;
+            color: var(--accent-green-bright);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .manual-body .legend-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 8px;
+        }
+
+        .manual-body .legend-item {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .manual-body .legend-item strong {
+            color: #ffffff;
+        }
+
+        .manual-body footer {
+            margin-top: 12px;
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            padding-top: 8px;
+            border-top: 1px solid #2a363d;
+        }
     </style>
 </head>
 <body>
@@ -448,7 +627,6 @@
             <div class="match-builder">
                 <div class="player-slot" id="slotPlayer1" onclick="limparSlot(0)">Jogador 1</div>
                 
-                <!-- INPUTS RESTROITO A 1 DÍGITO ENTRE 0 E 6 -->
                 <input type="text" id="score1" class="score-input" placeholder="G" maxlength="1" inputmode="numeric" oninput="validarDigitoUnico(this)">
                 <span class="vs-divider">X</span>
                 <input type="text" id="score2" class="score-input" placeholder="G" maxlength="1" inputmode="numeric" oninput="validarDigitoUnico(this)">
@@ -460,7 +638,7 @@
                 <button class="btn-action primary" id="btnConfirmar" onclick="salvarJogo()">Confirmar</button>
                 <button class="btn-action" id="btnAdd">Add</button>
                 <button class="btn-action" id="btnHist">Hist</button>
-                <button class="btn-action" id="btnSemana" onclick="toggleSubPainel('semana')">Semana</button>
+                <button class="btn-action" id="btnSemana">Semana</button>
             </div>
         </div>
 
@@ -499,7 +677,19 @@
         </div>
     </div>
 
-    <!-- 3. MODAL ADICIONAR NOVO JOGADOR (TOQUE RÁPIDO NO ADD) -->
+    <!-- 3. MODAL EDITAR NOME DO JOGADOR (AO CLICAR NA POSIÇÃO AMARELA) -->
+    <div class="modal-overlay" id="editPlayerPosModal">
+        <div class="modal-box">
+            <h3 class="modal-title">Editar Nome do Jogador</h3>
+            <input type="text" id="editPosPlayerName" class="modal-input" placeholder="Novo Nome..." autocomplete="off">
+            <div class="modal-buttons">
+                <button class="btn-modal cancel" onclick="fecharModalEditarJogadorPos()">Cancelar</button>
+                <button class="btn-modal confirm" onclick="salvarNomeJogadorPos()">Salvar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. MODAL ADICIONAR NOVO JOGADOR (TOQUE RÁPIDO NO ADD) -->
     <div class="modal-overlay" id="addPlayerModal">
         <div class="modal-box">
             <h3 class="modal-title">Adicionar Novo Jogador</h3>
@@ -511,7 +701,7 @@
         </div>
     </div>
 
-    <!-- 4. MODAL GERENCIAR JOGADORES (LONG PRESS NO ADD) -->
+    <!-- 5. MODAL GERENCIAR JOGADORES (LONG PRESS NO ADD) -->
     <div class="modal-overlay" id="managePlayersModal">
         <div class="modal-box">
             <h3 class="modal-title">Gerenciar & Editar Jogadores</h3>
@@ -525,7 +715,7 @@
         </div>
     </div>
 
-    <!-- 5. MODAL GESTÃO DE DADOS (LONG PRESS NO BOTÃO HIST) -->
+    <!-- 6. MODAL GESTÃO DE DADOS (LONG PRESS NO BOTÃO HIST) -->
     <div class="modal-overlay" id="dataBackupModal">
         <div class="modal-box">
             <h3 class="modal-title">Gestão de Dados & Backup</h3>
@@ -540,10 +730,161 @@
 
             <hr style="border: 0; border-top: 1px solid #2a363d; margin: 5px 0;">
 
-            <button class="btn-modal danger" style="width:100%;" onclick="solicitarLimpezaGeral()">🗑️ Resetar/Limpar Tudo</button>
+            <button class="btn-modal danger" style="width:100%;" onclick="solicitarLimpezaGeral()">🗑 Resetar/Limpar Tudo</button>
 
             <div class="modal-buttons">
                 <button class="btn-modal cancel" onclick="fecharModalDataBackup()">Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 7. MODAL MINI MANUAL (LONG PRESS NO BOTÃO SEMANA) -->
+    <div class="modal-overlay" id="miniManualModal">
+        <div class="modal-box modal-box-manual">
+            <div class="manual-header">
+                <h3>📖 Mini Manual do Usuário</h3>
+                <button class="btn-close-panel" onclick="fecharModalMiniManual()">&times;</button>
+            </div>
+            <div class="manual-container">
+                <div class="manual-body">
+                    
+                    <!-- PONTUAÇÃO CORRIGIDA -->
+                    <div class="rules-grid">
+                        <div class="rule-card">
+                            <div class="rule-card-title">
+                                <span>🎾 JOGO DE 6 GAMES</span>
+                            </div>
+                            <div class="rule-card-body">
+                                <span>Vencedor: <strong class="pts-badge win">+50 PTS</strong></span>
+                                <span>Perdedor: <strong class="pts-badge loss">-10 PTS</strong></span>
+                            </div>
+                        </div>
+
+                        <div class="rule-card">
+                            <div class="rule-card-title">
+                                <span>🎾 JOGO DE 4 GAMES</span>
+                            </div>
+                            <div class="rule-card-body">
+                                <span>Vencedor: <strong class="pts-badge win">+30 PTS</strong></span>
+                                <span>Perdedor: <strong class="pts-badge loss">-5 PTS</strong></span>
+                            </div>
+                        </div>
+
+                        <div class="rule-card warning-card">
+                            <div class="rule-card-title" style="color: var(--warning);">
+                                <span>⚠️ REGRA SEMANAL</span>
+                            </div>
+                            <div class="rule-card-body" style="color: #ffffff;">
+                                É proibido jogar mais de 1 vez<br>com o mesmo adversário na semana.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- REGRAS E Módulos -->
+                    <div class="items-grid">
+                        <div class="item-card">
+                            <div class="item-head">
+                                <span class="item-num">1</span>
+                                <span class="item-title">Botão Add</span>
+                            </div>
+                            <ul>
+                                <li>Clique rápido: Cadastra novo jogador.</li>
+                                <li>Clique longo: Gerencia, edita e exclui<br>jogadores existentes.</li>
+                            </ul>
+                        </div>
+
+                        <div class="item-card">
+                            <div class="item-head">
+                                <span class="item-num">2</span>
+                                <span class="item-title">Jogador na Tabela</span>
+                            </div>
+                            <ul>
+                                <li>Clique no nome: Seleciona para a partida.</li>
+                                <li>Sistema verifica se a dupla já jogou<br>na semana atual.</li>
+                            </ul>
+                        </div>
+
+                        <div class="item-card">
+                            <div class="item-head">
+                                <span class="item-num">3</span>
+                                <span class="item-title">Posição do Jogador</span>
+                            </div>
+                            <ul>
+                                <li>Clique no número amarelo da posição<br>para editar o nome direto na tabela.</li>
+                            </ul>
+                        </div>
+
+                        <div class="item-card">
+                            <div class="item-head">
+                                <span class="item-num">4</span>
+                                <span class="item-title">Painel de Ranking</span>
+                            </div>
+                            <ul>
+                                <li>Ordenação automática por Pontos.</li>
+                                <li>Ícone de câmera exposto para<br>compartilhar imagem do Ranking.</li>
+                            </ul>
+                        </div>
+
+                        <div class="item-card">
+                            <div class="item-head">
+                                <span class="item-num">5</span>
+                                <span class="item-title">Botão Histórico</span>
+                            </div>
+                            <ul>
+                                <li>Clique rápido: Exibe/oculta o histórico.</li>
+                                <li>Clique longo: Abre o painel de Backup,<br>Exportação e Restauração TXT.</li>
+                            </ul>
+                        </div>
+
+                        <div class="item-card">
+                            <div class="item-head">
+                                <span class="item-num">6</span>
+                                <span class="item-title">Botão Semana</span>
+                            </div>
+                            <ul>
+                                <li>Clique rápido: Mostra jogos da semana.</li>
+                                <li>Clique longo: Abre este Mini Manual.</li>
+                            </ul>
+                        </div>
+
+                        <div class="item-card">
+                            <div class="item-head">
+                                <span class="item-num">7</span>
+                                <span class="item-title">Slots Jogador 1 e 2</span>
+                            </div>
+                            <ul>
+                                <li>Exibe jogadores selecionados.</li>
+                                <li>Clique no slot para remover jogador.</li>
+                            </ul>
+                        </div>
+
+                        <div class="item-card">
+                            <div class="item-head">
+                                <span class="item-num">8</span>
+                                <span class="item-title">Botão Confirmar</span>
+                            </div>
+                            <ul>
+                                <li>Valida os placares permitidos.</li>
+                                <li>Exige confirmação dupla para salvar.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- LEGENDA -->
+                    <div class="legend-box">
+                        <div class="legend-title">Legenda da Tabela</div>
+                        <div class="legend-grid">
+                            <div class="legend-item"><strong>J:</strong> Jogos</div>
+                            <div class="legend-item"><strong>V:</strong> Vitórias</div>
+                            <div class="legend-item"><strong>Gg:</strong> Games Ganhos</div>
+                            <div class="legend-item"><strong>Gp:</strong> Games Perdidos</div>
+                            <div class="legend-item"><strong>PTS:</strong> Pontuação</div>
+                            <div class="legend-item"><strong>Evol:</strong> Evolução</div>
+                        </div>
+                    </div>
+
+                    <footer>Ranking Zona Sul Tênis • 2026</footer>
+                </div>
             </div>
         </div>
     </div>
@@ -558,7 +899,10 @@
         let abaAtiva = null;
         let histTimer = null;
         let addTimer = null;
+        let semanaTimer = null;
         let isLongPressAdd = false;
+        let isLongPressSemana = false;
+        let jogadorEmEdicaoId = null;
 
         // VARIÁVEIS PARA O FLUXO DE CONFIRMAÇÃO EM 2 ETAPAS (AUMENTADO PARA 6 SEGUNDOS)
         let aguardandoSegundaConfirmacao = false;
@@ -598,19 +942,16 @@
             }
         }
 
-        // VERIFICAR DUPLICIDADE DE NOME (IGNORA CAIXA ALTA/BAIXA E ESPAÇOS SOBRANTES)
         function jogadorExiste(nome, ignorarId = null) {
             const nomeNormalizado = nome.trim().toLowerCase();
             return jogadores.some(j => j.id !== ignorarId && j.nome.trim().toLowerCase() === nomeNormalizado);
         }
 
-        // VALIDAR RESTRIÇÃO DE DÍGITO ÚNICO (APENAS 0, 1, 2, 3, 4, 5, 6)
         function validarDigitoUnico(input) {
             input.value = input.value.replace(/[^0-6]/g, '');
             if (input.value.length > 1) {
                 input.value = input.value.charAt(0);
             }
-            // Se o usuário mexer nos números enquanto aguarda confirmação, cancelamos o estado pendente
             if (aguardandoSegundaConfirmacao) {
                 cancelarEstadoConfirmacao();
             }
@@ -626,9 +967,9 @@
             configurarCompartilhamentos();
             configurarEventosHist();
             configurarEventosAdd();
+            configurarEventosSemana();
         }
 
-        // ORDENAÇÃO: Pontos Decrescente -> Nome Crescente (Ordem Alfabética)
         function ordenarJogadores(lista) {
             return lista.sort((a, b) => {
                 if (a.status === 'abandonou' && b.status !== 'abandonou') return 1;
@@ -666,7 +1007,10 @@
                     tr.classList.add('selected-for-match');
                 }
 
-                tr.onclick = () => selecionarJogador(jogador);
+                tr.onclick = (e) => {
+                    if (e.target.classList.contains('badge-pos')) return;
+                    selecionarJogador(jogador);
+                };
 
                 let indicadorClass = 'trend-neutral';
                 let indicadorTexto = '0';
@@ -681,7 +1025,7 @@
                 const posExibicao = jogador.status === 'abandonou' ? '-' : `${posicaoAtiva++}º`;
 
                 tr.innerHTML = `
-                    <td class="col-pos"><span class="badge-pos">${posExibicao}</span></td>
+                    <td class="col-pos"><span class="badge-pos" onclick="abrirModalEditarJogadorPos(${jogador.id}, event)" title="Editar nome do jogador">${posExibicao}</span></td>
                     <td class="col-jogador player-name">${jogador.nome} ${jogador.status === 'abandonou' ? '(Aba.)' : ''}</td>
                     <td></td>
                     <td>${jogador.jogos}</td>
@@ -696,7 +1040,59 @@
             });
         }
 
-        // --- CONFIGURAÇÃO DO BOTÃO ADD (TOQUE RÁPIDO VS LONG PRESS) ---
+        // EDITAR JOGADOR AO CLICAR NA POSIÇÃO AMARELA
+        function abrirModalEditarJogadorPos(id, event) {
+            if (event) event.stopPropagation();
+            dispararVibracao();
+            const jogador = jogadores.find(j => j.id === id);
+            if (!jogador) return;
+
+            jogadorEmEdicaoId = id;
+            const input = document.getElementById('editPosPlayerName');
+            input.value = jogador.nome;
+            document.getElementById('editPlayerPosModal').style.display = 'flex';
+            setTimeout(() => input.focus(), 100);
+        }
+
+        function fecharModalEditarJogadorPos() {
+            document.getElementById('editPlayerPosModal').style.display = 'none';
+            jogadorEmEdicaoId = null;
+            garantirFullscreen();
+        }
+
+        function salvarNomeJogadorPos() {
+            garantirFullscreen();
+            const input = document.getElementById('editPosPlayerName');
+            const novoNome = input.value.trim();
+
+            if (!novoNome) return;
+
+            if (jogadorExiste(novoNome, jogadorEmEdicaoId)) {
+                falarAviso("Jogador já cadastrado");
+                return;
+            }
+
+            const jogador = jogadores.find(j => j.id === jogadorEmEdicaoId);
+            if (jogador) {
+                jogador.nome = novoNome;
+                
+                historicoJogos.forEach(j => {
+                    if (j.vencedorId === jogador.id) j.vencedor = novoNome;
+                    if (j.perdedorId === jogador.id) j.perdedor = novoNome;
+                });
+
+                salvarEstadoLocal();
+                renderizarTabela();
+                atualizarPainelJogo();
+                if (abaAtiva) renderizarSubPainel(abaAtiva);
+                
+                fecharModalEditarJogadorPos();
+                dispararVibracao();
+                falarAviso(`Nome alterado para ${novoNome}`);
+            }
+        }
+
+        // CONFIGURAÇÃO DO BOTÃO ADD
         function configurarEventosAdd() {
             const btnAdd = document.getElementById('btnAdd');
 
@@ -731,7 +1127,6 @@
             });
         }
 
-        // 1. MODAL ADICIONAR JOGADOR (TOQUE RÁPIDO)
         function abrirModalAdicionarJogador() {
             document.getElementById('quickPlayerName').value = '';
             document.getElementById('addPlayerModal').style.display = 'flex';
@@ -744,11 +1139,11 @@
         }
 
         function confirmarNovoJogadorRapido() {
+            garantirFullscreen();
             const input = document.getElementById('quickPlayerName');
             const nome = input.value.trim();
 
             if (nome !== '') {
-                // VERIFICAÇÃO DE DUPLICIDADE DE NOME
                 if (jogadorExiste(nome)) {
                     falarAviso("Jogador já cadastrado");
                     return;
@@ -769,13 +1164,10 @@
                 renderizarTabela();
                 fecharModalAdicionarJogador();
                 dispararVibracao();
-
-                // FALA APENAS: "[NOME DO JOGADOR] ADICIONADO"
                 falarAviso(`${nome} Adicionado`);
             }
         }
 
-        // 2. MODAL GERENCIAR JOGADORES (LONG PRESS NO ADD)
         function abrirModalGerenciarJogadores() {
             renderizarListaGerenciarJogadores();
             document.getElementById('managePlayersModal').style.display = 'flex';
@@ -826,10 +1218,9 @@
                     return;
                 }
 
-                // VERIFICA SE O NOVO NOME DIGITADO JÁ PERTENCE A OUTRO JOGADOR
                 if (jogadorExiste(novoNome, id)) {
                     falarAviso("Jogador já cadastrado");
-                    inputElement.value = jogador.nome; // Restaura o nome anterior
+                    inputElement.value = jogador.nome;
                     return;
                 }
 
@@ -857,7 +1248,7 @@
             }
         }
 
-        // --- CONFIGURAÇÃO DO BOTÃO HIST (TOQUE RÁPIDO VS LONG PRESS) ---
+        // CONFIGURAÇÃO DO BOTÃO HIST
         function configurarEventosHist() {
             const btnHist = document.getElementById('btnHist');
 
@@ -896,7 +1287,50 @@
             garantirFullscreen();
         }
 
-        // EXPORTAR & RESTAURAR BACKUP (FORMATO TXT / JSON INTERNO)
+        // CONFIGURAÇÃO DO BOTÃO SEMANA (CLIQUE RÁPIDO VS CLIQUE LONGO)
+        function configurarEventosSemana() {
+            const btnSemana = document.getElementById('btnSemana');
+
+            const iniciarPress = () => {
+                isLongPressSemana = false;
+                semanaTimer = setTimeout(() => {
+                    isLongPressSemana = true;
+                    dispararVibracao();
+                    abrirModalMiniManual();
+                }, 800);
+            };
+
+            const cancelarPress = () => {
+                if (semanaTimer) clearTimeout(semanaTimer);
+            };
+
+            btnSemana.addEventListener('mousedown', iniciarPress);
+            btnSemana.addEventListener('mouseup', cancelarPress);
+            btnSemana.addEventListener('mouseleave', cancelarPress);
+
+            btnSemana.addEventListener('touchstart', (e) => {
+                iniciarPress();
+            }, { passive: true });
+
+            btnSemana.addEventListener('touchend', cancelarPress);
+
+            btnSemana.addEventListener('click', () => {
+                if (!isLongPressSemana) {
+                    toggleSubPainel('semana');
+                }
+            });
+        }
+
+        function abrirModalMiniManual() {
+            document.getElementById('miniManualModal').style.display = 'flex';
+        }
+
+        function fecharModalMiniManual() {
+            document.getElementById('miniManualModal').style.display = 'none';
+            garantirFullscreen();
+        }
+
+        // EXPORTAR & RESTAURAR BACKUP
         function exportarBackupTXT() {
             dispararVibracao();
             const payload = {
@@ -1125,21 +1559,16 @@
             }
         }
 
-        // VALIDAÇÃO DE PLACARES VÁLIDOS DE TÊNIS (4 OU 6 GAMES)
         function ePlacarValido(s1, s2) {
             const v = Math.max(s1, s2);
             const p = Math.min(s1, s2);
 
-            // Jogo de 4 Games: 4x0, 4x1, 4x2, 4x3
             if (v === 4 && (p >= 0 && p <= 3)) return true;
-
-            // Jogo de 6 Games: 6x0, 6x1, 6x2, 6x3, 6x4, 6x5
             if (v === 6 && (p >= 0 && p <= 5)) return true;
 
             return false;
         }
 
-        // CANCELAR TEMPORIZADOR E RESTAURAR BOTÃO DE CONFIRMAÇÃO
         function cancelarEstadoConfirmacao() {
             if (timerConfirmacao) clearTimeout(timerConfirmacao);
             if (intervalContagem) clearInterval(intervalContagem);
@@ -1153,13 +1582,11 @@
         function salvarJogo() {
             dispararVibracao();
 
-            // CASO JÁ ESTEJA AGUARDANDO A SEGUNDA CONFIRMAÇÃO (SEGUNDO CLIQUE)
             if (aguardandoSegundaConfirmacao) {
                 efetivarSalvarJogo();
                 return;
             }
 
-            // PRIMEIRO CLIQUE: VALIDAÇÃO E INÍCIO DO TEMPORIZADOR DE 6 SEGUNDOS
             if (jogadoresSelecionados.length < 2) {
                 falarAviso("Selecione dois jogadores");
                 return;
@@ -1176,13 +1603,11 @@
             const score1 = parseInt(val1, 10);
             const score2 = parseInt(val2, 10);
 
-            // Validação de Placar Válido para Tênis (4 ou 6 games)
             if (!ePlacarValido(score1, score2)) {
                 falarAviso("Placar Final de jogo Inválido, não corresponde a um jogo de 4 ou 6 games válidos para pontuar no Ranking.");
                 return;
             }
 
-            // CALCULAR RESULTADO TEMPORÁRIO PARA LEITURA DE ÁUDIO
             const p1 = jogadoresSelecionados[0];
             const p2 = jogadoresSelecionados[1];
             const maxGames = Math.max(score1, score2);
@@ -1200,10 +1625,8 @@
                 placarStr = `${score2}x${score1}`;
             }
 
-            // INICIAR ÁUDIO DA PREVIA DO RESULTADO
             falarResultado(nomeVencedor, ptsVencedor, nomePerdedor, ptsPerdedorVal, placarStr);
 
-            // ATIVAR MODO DE ESPERA DE CONFIRMAÇÃO (VERMELHO POR 6 SEGUNDOS)
             aguardandoSegundaConfirmacao = true;
             tempoRestante = 6;
 
@@ -1223,7 +1646,6 @@
             }, 6000);
         }
 
-        // GRAVAR DEFINITIVAMENTE NO BANCO DE DADOS LOCAL
         function efetivarSalvarJogo() {
             const val1 = document.getElementById('score1').value.trim();
             const val2 = document.getElementById('score2').value.trim();
@@ -1291,7 +1713,6 @@
             salvarEstadoLocal();
             cancelarEstadoConfirmacao();
 
-            // LIMPAR OS CAMPOS APÓS SALVAR
             jogadoresSelecionados = [];
             document.getElementById('score1').value = '';
             document.getElementById('score2').value = '';
