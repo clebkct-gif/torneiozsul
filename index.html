@@ -643,17 +643,52 @@
       }
 
       // Eventos de UI
+      let activeBlobUrl = null;
+      function loadVideoSource(srcUrl, labelText) {
+        if (!srcUrl) return;
+        if (activeBlobUrl && activeBlobUrl !== srcUrl) {
+          URL.revokeObjectURL(activeBlobUrl);
+          activeBlobUrl = null;
+        }
+        if (srcUrl.startsWith('blob:')) activeBlobUrl = srcUrl;
+        state.hasVideo = true;
+        state.videoContactTime = null;
+        document.getElementById('videoTcVal').textContent = 'Não marcado';
+        emptyVideo.style.display = 'none';
+        videoEl.pause();
+        videoEl.removeAttribute('src');
+        videoEl.load();
+        videoEl.src = srcUrl;
+        videoEl.load();
+        if (labelText) {
+          document.getElementById('strokeIntro').textContent =
+            `Vídeo carregado: ${labelText}. Pause no instante do contato da bola e clique em "Marcar Contato no Vídeo".`;
+        }
+      }
+
       document.getElementById('videoFile').addEventListener('change', (e) => {
         const file = e.target.files && e.target.files[0];
         if (!file) return;
         const url = URL.createObjectURL(file);
-        videoEl.src = url;
-        state.hasVideo = true;
-        emptyVideo.style.display = 'none';
-        videoEl.onloadedmetadata = () => {
-          syncTimelineBounds();
-          renderFrame();
+        loadVideoSource(url, `${file.name} (${file.type || 'MP4'})`);
+      });
+
+      videoEl.addEventListener('loadedmetadata', () => {
+        syncTimelineBounds();
+        renderFrame();
+      });
+
+      videoEl.addEventListener('error', () => {
+        const err = videoEl.error;
+        const codeMap = {
+          1: 'Carregamento abortado (MEDIA_ERR_ABORTED)',
+          2: 'Erro de rede ao baixar o vídeo (MEDIA_ERR_NETWORK)',
+          3: 'Falha na decodificação do MP4/codec (MEDIA_ERR_DECODE). Se o arquivo for HEVC/H.265 de iPhone, converta para H.264 (.mp4).',
+          4: 'Formato ou codec MP4 não suportado pelo navegador (MEDIA_ERR_SRC_NOT_SUPPORTED).'
         };
+        const msg = err ? (codeMap[err.code] || `Código de erro ${err.code}`) : 'Falha ao carregar o vídeo.';
+        emptyVideo.style.display = 'flex';
+        emptyVideo.innerHTML = `<strong style="color:#f87171;">Não foi possível carregar o vídeo</strong><span>${msg}</span>`;
       });
 
       strokeSelect.addEventListener('change', (e) => {
